@@ -1,7 +1,7 @@
 #include "db.h"
 
 // IMPORTANT: using YOUR local sqlite library
-#include "../libs/sqlite3/sqlite3.h"
+#include <sqlite3.h>
 
 #include <iostream>
 
