@@ -4,18 +4,19 @@ project(CampusFeedServer)
 
 set(CMAKE_CXX_STANDARD 17)
 
-# include your headers
-include_directories(
-    ${CMAKE_SOURCE_DIR}
-    ${CMAKE_SOURCE_DIR}/db
-    ${CMAKE_SOURCE_DIR}/libs/sqlite3
-)
+find_package(Crow CONFIG REQUIRED)
+find_package(unofficial-sqlite3 CONFIG REQUIRED)
 
 add_executable(server
     main.cpp
     db/db.cpp
-    libs/sqlite3/sqlite3.c
 )
 
-# if Crow is header-only (most setups)
-# no linking needed
+target_include_directories(server PRIVATE
+    ${CMAKE_SOURCE_DIR}
+)
+
+target_link_libraries(server PRIVATE
+    Crow::Crow
+    unofficial::sqlite3::sqlite3
+)
