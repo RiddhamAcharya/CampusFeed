@@ -1,5 +1,5 @@
 # 🌐 CampusFeed  
-### *A Centralized Campus Event Management System for Nepalalese Campuses*
+### *A Centralized Campus Event Management System for Nepalese Campuses*
 
 ---
 
