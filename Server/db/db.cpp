@@ -13,7 +13,7 @@ Database::Database(const std::string& db_path) {
                   << sqlite3_errmsg(db) << std::endl;
         db = nullptr;
     } else {
-        std::cout << "Database connected successfully 🚀" << std::endl;
+        std::cout << "Database connected successfully" << std::endl;
     }
 }
 
