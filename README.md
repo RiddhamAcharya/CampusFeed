@@ -136,7 +136,9 @@ CampusFeed is designed specifically for Nepalese institutions where:
 - **Riddham Acharya** (Roll No. 4)  
 - **Salim Ali** (Roll No. 13)  
 - **Sparsha Bartaula** (Roll No. 28)  
-- **Harsit Bhuju** (Roll No. 42)  
+- **Harsit Bhuju** (Roll No. 42)
+- - **Subhankar Chand** (Roll No. 42)  
+ 
 
 ---
 
