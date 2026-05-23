@@ -1,17 +1,16 @@
 #pragma once
 
 #include <string>
-
-// forward declare sqlite3 (from your local sqlite lib)
-struct sqlite3;
+#include <sqlite3.h>
 
 class Database {
 public:
+
+    sqlite3* db;
+
     Database(const std::string& db_path);
+
     ~Database();
 
     bool execute(const std::string& query);
-
-private:
-    sqlite3* db;
 };
