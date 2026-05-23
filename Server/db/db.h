@@ -13,4 +13,5 @@ public:
     ~Database();
 
     bool execute(const std::string& query);
+    void loadAllSchemas(const std::string& path);
 };
