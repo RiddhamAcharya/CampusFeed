@@ -10,6 +10,7 @@ find_package(unofficial-sqlite3 CONFIG REQUIRED)
 add_executable(server
     main.cpp
     db/db.cpp
+    routes/auth_routes.cpp
 )
 
 target_include_directories(server PRIVATE
