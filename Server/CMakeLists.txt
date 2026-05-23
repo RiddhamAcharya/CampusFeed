@@ -12,6 +12,7 @@ add_executable(server
     main.cpp
     db/db.cpp
     routes/auth_routes.cpp
+    routes/notification_routes.cpp
     utils/hash.cpp
 )
 
