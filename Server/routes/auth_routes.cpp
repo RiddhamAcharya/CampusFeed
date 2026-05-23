@@ -77,4 +77,70 @@ void setupAuthRoutes(crow::SimpleApp& app, Database& database) {
 
         return crow::response(200, "User created successfully");
     });
+
+    // LOGIN ROUTE
+
+        CROW_ROUTE(app, "/login")
+    .methods("POST"_method)
+    ([&database](const crow::request& req) {
+
+        auto body = crow::json::load(req.body);
+
+        if (!body) {
+            return crow::response(400, "Invalid JSON");
+        }
+
+        std::string email = std::string(body["email"].s());
+        std::string password = std::string(body["password"].s());
+
+        if (email.empty() || password.empty()) {
+            return crow::response(400, "Email and password required");
+        }
+
+        sqlite3* db = database.db;
+
+        const char* sql =
+            "SELECT id, full_name, email, password_hash, role "
+            "FROM users WHERE email = ?";
+
+        sqlite3_stmt* stmt;
+
+        if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) != SQLITE_OK) {
+            return crow::response(500, "DB error");
+        }
+
+        sqlite3_bind_text(stmt, 1, email.c_str(), -1, SQLITE_TRANSIENT);
+
+        int rc = sqlite3_step(stmt);
+
+        if (rc != SQLITE_ROW) {
+            sqlite3_finalize(stmt);
+            return crow::response(401, "User not found");
+        }
+
+        int id = sqlite3_column_int(stmt, 0);
+
+        std::string full_name = (const char*)sqlite3_column_text(stmt, 1);
+        std::string db_email = (const char*)sqlite3_column_text(stmt, 2);
+        std::string db_password_hash = (const char*)sqlite3_column_text(stmt, 3);
+        std::string role = (const char*)sqlite3_column_text(stmt, 4);
+
+        sqlite3_finalize(stmt);
+
+        // Hash incoming password
+        std::string input_hash = hashPassword(password);
+
+        if (input_hash != db_password_hash) {
+            return crow::response(401, "Invalid password");
+        }
+
+        crow::json::wvalue res;
+        res["message"] = "Login successful";
+        res["user_id"] = id;
+        res["full_name"] = full_name;
+        res["email"] = db_email;
+        res["role"] = role;
+
+        return crow::response(res);
+    });
 }
