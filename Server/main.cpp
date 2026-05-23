@@ -7,15 +7,7 @@ int main() {
     crow::SimpleApp app;
 
     Database db("../../../Database/campusfeed.db");
-
-    db.execute(
-        "CREATE TABLE IF NOT EXISTS users ("
-        "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-        "username TEXT UNIQUE NOT NULL,"
-        "email TEXT UNIQUE NOT NULL,"
-        "password TEXT NOT NULL"
-        ");"
-    );
+    db.loadAllSchemas("../../../Database/Schema/");
 
     CROW_ROUTE(app, "/health")([]() {
         return "CampusFeed server alive";
