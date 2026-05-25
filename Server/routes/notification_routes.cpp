@@ -4,11 +4,10 @@
 
 void setupNotificationRoutes(crow::SimpleApp& app, Database& database) {
 
-    // GET /notifications/<user_id>
     // fetch all notifications for a user
-    CROW_ROUTE(app, "/notifications/<int>")
-    .methods("GET"_method)
-    ([&database](int user_id) {
+    CROW_ROUTE(app, "/notifications/<int>").methods("GET"_method)
+    ([&database](int user_id) 
+    {
 
         sqlite3* db = database.db;
 
@@ -36,10 +35,8 @@ void setupNotificationRoutes(crow::SimpleApp& app, Database& database) {
         return crow::response(result);
     });
 
-    // POST /notifications
     // create a new notification
-    CROW_ROUTE(app, "/notifications")
-    .methods("POST"_method)
+    CROW_ROUTE(app, "/notifications").methods("POST"_method)
     ([&database](const crow::request& req) {
 
         auto body = crow::json::load(req.body);
@@ -78,11 +75,10 @@ void setupNotificationRoutes(crow::SimpleApp& app, Database& database) {
         return crow::response(200, "Notification created");
     });
 
-    // PATCH /notifications/<id>/read
     // mark a notification as read
-    CROW_ROUTE(app, "/notifications/<int>/read")
-    .methods("PATCH"_method)
-    ([&database](int id) {
+    CROW_ROUTE(app, "/notifications/<int>/read").methods("PATCH"_method)
+    ([&database](int id)
+    {
 
         sqlite3* db = database.db;
 

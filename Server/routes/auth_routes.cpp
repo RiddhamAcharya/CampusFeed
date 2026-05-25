@@ -9,9 +9,9 @@ void setupAuthRoutes(crow::SimpleApp& app, Database& database) {
     
     // SIGNUP ROUTE
     
-    CROW_ROUTE(app, "/signup")
-    .methods("POST"_method)
-    ([&database](const crow::request& req) {
+    CROW_ROUTE(app, "/signup").methods("POST"_method)
+    ([&database](const crow::request& req) 
+    {
 
         auto body = crow::json::load(req.body);
 
@@ -43,7 +43,7 @@ void setupAuthRoutes(crow::SimpleApp& app, Database& database) {
             return crow::response(400, "Invalid role");
         }
 
-        // Hash password
+        // Hash password using openssl
         std::string password_hash = hashPassword(password);
 
         sqlite3* db = database.db;
@@ -80,9 +80,9 @@ void setupAuthRoutes(crow::SimpleApp& app, Database& database) {
 
     // LOGIN ROUTE
 
-        CROW_ROUTE(app, "/login")
-    .methods("POST"_method)
-    ([&database](const crow::request& req) {
+    CROW_ROUTE(app, "/login").methods("POST"_method)
+    ([&database](const crow::request& req)
+    {
 
         auto body = crow::json::load(req.body);
 

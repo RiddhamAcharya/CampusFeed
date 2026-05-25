@@ -30,7 +30,9 @@ int main() {
     });
 
     setupAuthRoutes(app, db);
+
     setupNotificationRoutes(app, db);
+    
 
     app.port(18080).multithreaded().run();
 }

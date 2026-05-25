@@ -2,10 +2,7 @@
 #include <filesystem>
 #include <fstream>
 #include <sstream>
-
-// IMPORTANT: using YOUR local sqlite library
 #include <sqlite3.h>
-
 #include <iostream>
 
 Database::Database(const std::string& db_path) {
@@ -53,7 +50,6 @@ void Database::loadAllSchemas(const std::string& folderPath) {
         folderPath + "/notifications.sql",
         folderPath + "/interactions.sql",
         folderPath + "/indexes.sql"
-        // seed.sql intentionally NOT included yet
     };
 
     for (const auto& path : files) {
