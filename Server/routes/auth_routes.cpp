@@ -1,6 +1,7 @@
 #include "auth_routes.h"
 #include "../db/db.h"
 #include "../utils/hash.h"
+#include "../utils/jwt.h"
 
 #include <sqlite3.h>
 #include <iostream>
@@ -134,12 +135,17 @@ void setupAuthRoutes(crow::SimpleApp& app, Database& database) {
             return crow::response(401, "Invalid password");
         }
 
+        std::string token = create_token(id);
+
         crow::json::wvalue res;
+
         res["message"] = "Login successful";
-        res["user_id"] = id;
-        res["full_name"] = full_name;
-        res["email"] = db_email;
-        res["role"] = role;
+        res["token"] = token;
+
+        res["user"]["id"] = id;
+        res["user"]["full_name"] = full_name;
+        res["user"]["email"] = db_email;
+        res["user"]["role"] = role;
 
         return crow::response(res);
     });
