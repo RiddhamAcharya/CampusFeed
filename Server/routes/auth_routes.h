@@ -2,5 +2,6 @@
 
 #include "crow.h"
 #include "../db/db.h"
+#include "../utils/app.h"
 
-void setupAuthRoutes(crow::SimpleApp& app, Database& db);
+void setupAuthRoutes(App& app, Database& db);

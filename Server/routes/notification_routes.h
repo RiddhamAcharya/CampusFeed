@@ -1,5 +1,6 @@
 #pragma once
 #include "../db/db.h"
 #include "crow.h"
+#include "../utils/app.h"
 
-void setupNotificationRoutes(crow::SimpleApp& app, Database& database);
+void setupNotificationRoutes(App& app, Database& database);

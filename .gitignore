@@ -2,6 +2,7 @@
 build/
 Server/build
 Client/build
+Client/CampusFeed/build
 cmake-build-*/
 
 # Compiled files

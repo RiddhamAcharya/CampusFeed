@@ -2,10 +2,12 @@
 #include "db/db.h"
 #include "routes/auth_routes.h"
 #include "routes/notification_routes.h"
+#include "middleware/auth_middleware.h"
+#include "utils/app.h"
 
 int main() {
 
-    crow::SimpleApp app;
+    App app;
 
     Database db("../../../Database/campusfeed.db");
     db.loadAllSchemas("../../../Database/Schema/");

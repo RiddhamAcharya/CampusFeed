@@ -1,8 +1,9 @@
 #include "notification_routes.h"
+#include "../utils/app.h"
 #include <sqlite3.h>
 #include <iostream>
 
-void setupNotificationRoutes(crow::SimpleApp& app, Database& database) {
+void setupNotificationRoutes(App& app, Database& database) {
 
     // fetch all notifications for a user
     CROW_ROUTE(app, "/notifications/<int>").methods("GET"_method)

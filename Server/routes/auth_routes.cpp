@@ -2,11 +2,12 @@
 #include "../db/db.h"
 #include "../utils/hash.h"
 #include "../utils/jwt.h"
+#include "../utils/app.h"
 
 #include <sqlite3.h>
 #include <iostream>
 
-void setupAuthRoutes(crow::SimpleApp& app, Database& database) {
+void setupAuthRoutes(App& app, Database& database) {
     
     // SIGNUP ROUTE
     
