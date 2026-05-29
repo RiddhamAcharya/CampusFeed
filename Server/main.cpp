@@ -2,6 +2,7 @@
 #include "db/db.h"
 #include "routes/auth_routes.h"
 #include "routes/notification_routes.h"
+#include "routes/interaction_routes.h" 
 #include "middleware/auth_middleware.h"
 #include "utils/app.h"
 
