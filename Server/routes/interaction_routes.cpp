@@ -96,9 +96,9 @@ CROW_ROUTE(app, "/interactions/<int>/count").methods("GET"_method)
     result["not_interested"] = 0;
 
     while (sqlite3_step(stmt) == SQLITE_ROW) {
-        std::string type = 
+        std::string type =
             (const char*)sqlite3_column_text(stmt, 0);
-        int count        = 
+        int count        =
             sqlite3_column_int(stmt, 1);
         result[type]     = count;
     }
