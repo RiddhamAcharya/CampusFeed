@@ -3,6 +3,7 @@
 #include "routes/auth_routes.h"
 #include "routes/notification_routes.h"
 #include "routes/interaction_routes.h" 
+#include "routes/user_routes.h"
 #include "middleware/auth_middleware.h"
 #include "utils/app.h"
 
@@ -35,8 +36,10 @@ int main() {
     setupAuthRoutes(app, db);
 
     setupNotificationRoutes(app, db);
-    setupInteractionRoutes(app, db);
-    
 
+    setupInteractionRoutes(app, db);
+
+    setupUserRoutes(app, db);
+    
     app.port(18080).multithreaded().run();
 }
