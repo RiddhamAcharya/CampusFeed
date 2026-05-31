@@ -286,4 +286,86 @@ void setupEventRoutes(App &app, Database &database)
     response["message"] = "Event created successfully";
 
     return crow::response(response); });
+
+    // Get event by ID route to fetch details of a specific event
+    CROW_ROUTE(app, "/events/<int>")
+        .methods("GET"_method)([&database](int eventId)
+                               {
+    sqlite3* db = database.db;
+
+    const char* sql =
+        "SELECT id, title, description, category, "
+        "location, event_date, registration_link, "
+        "image_path, organizer_id, created_at "
+        "FROM events "
+        "WHERE id = ?";
+
+    sqlite3_stmt* stmt;
+
+    if (sqlite3_prepare_v2(
+            db,
+            sql,
+            -1,
+            &stmt,
+            nullptr) != SQLITE_OK)
+    {
+        return crow::response(
+            500,
+            "Failed to prepare query"
+        );
+    }
+
+    sqlite3_bind_int(stmt, 1, eventId);
+
+    int rc = sqlite3_step(stmt);
+
+    if (rc != SQLITE_ROW)
+    {
+        sqlite3_finalize(stmt);
+
+        return crow::response(
+            404,
+            "Event not found"
+        );
+    }
+
+    crow::json::wvalue event;
+
+    event["id"] =
+        sqlite3_column_int(stmt, 0);
+
+    event["title"] =
+        (const char*)sqlite3_column_text(stmt, 1);
+
+    event["description"] =
+        (const char*)sqlite3_column_text(stmt, 2);
+
+    event["category"] =
+        (const char*)sqlite3_column_text(stmt, 3);
+
+    event["location"] =
+        (const char*)sqlite3_column_text(stmt, 4);
+
+    event["event_date"] =
+        (const char*)sqlite3_column_text(stmt, 5);
+
+    event["registration_link"] =
+        sqlite3_column_text(stmt, 6)
+        ? (const char*)sqlite3_column_text(stmt, 6)
+        : "";
+
+    event["image_path"] =
+        sqlite3_column_text(stmt, 7)
+        ? (const char*)sqlite3_column_text(stmt, 7)
+        : "";
+
+    event["organizer_id"] =
+        sqlite3_column_int(stmt, 8);
+
+    event["created_at"] =
+        (const char*)sqlite3_column_text(stmt, 9);
+
+    sqlite3_finalize(stmt);
+
+    return crow::response(event); });
 }
