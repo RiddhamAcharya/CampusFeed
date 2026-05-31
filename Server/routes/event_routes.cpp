@@ -368,4 +368,225 @@ void setupEventRoutes(App &app, Database &database)
     sqlite3_finalize(stmt);
 
     return crow::response(event); });
+
+    // PUT event by ID route to allow organizers to update their events
+    CROW_ROUTE(app, "/events/<int>")
+        .methods("PUT"_method)([&app, &database](const crow::request &req, int eventId)
+                               {
+    auto& ctx =
+        app.get_context<AuthMiddleware>(req);
+
+    int userId = ctx.user_id;
+
+    sqlite3* db = database.db;
+
+    // Get current user's role
+
+    const char* roleSql =
+        "SELECT role FROM users WHERE id = ?";
+
+    sqlite3_stmt* roleStmt;
+
+    if (sqlite3_prepare_v2(
+            db,
+            roleSql,
+            -1,
+            &roleStmt,
+            nullptr) != SQLITE_OK)
+    {
+        return crow::response(
+            500,
+            "Failed to prepare role query"
+        );
+    }
+
+    sqlite3_bind_int(roleStmt, 1, userId);
+
+    int rc = sqlite3_step(roleStmt);
+
+    if (rc != SQLITE_ROW)
+    {
+        sqlite3_finalize(roleStmt);
+
+        return crow::response(
+            404,
+            "User not found"
+        );
+    }
+
+    std::string role =
+        (const char*)sqlite3_column_text(roleStmt, 0);
+
+    sqlite3_finalize(roleStmt);
+
+    if (role == "student")
+    {
+        return crow::response(
+            403,
+            "Students cannot edit events"
+        );
+    }
+
+    // Find event owner
+
+    const char* ownerSql =
+        "SELECT organizer_id "
+        "FROM events "
+        "WHERE id = ?";
+
+    sqlite3_stmt* ownerStmt;
+
+    if (sqlite3_prepare_v2(
+            db,
+            ownerSql,
+            -1,
+            &ownerStmt,
+            nullptr) != SQLITE_OK)
+    {
+        return crow::response(
+            500,
+            "Failed to prepare owner query"
+        );
+    }
+
+    sqlite3_bind_int(ownerStmt, 1, eventId);
+
+    rc = sqlite3_step(ownerStmt);
+
+    if (rc != SQLITE_ROW)
+    {
+        sqlite3_finalize(ownerStmt);
+
+        return crow::response(
+            404,
+            "Event not found"
+        );
+    }
+
+    int organizerId =
+        sqlite3_column_int(ownerStmt, 0);
+
+    sqlite3_finalize(ownerStmt);
+
+    // Ownership check
+
+    if (role != "admin" &&
+        organizerId != userId)
+    {
+        return crow::response(
+            403,
+            "You can only edit your own events"
+        );
+    }
+
+    auto body =
+        crow::json::load(req.body);
+
+    if (!body)
+    {
+        return crow::response(
+            400,
+            "Invalid JSON"
+        );
+    }
+
+    std::string title =
+        std::string(body["title"].s());
+
+    std::string description =
+        std::string(body["description"].s());
+
+    std::string category =
+        std::string(body["category"].s());
+
+    std::string location =
+        std::string(body["location"].s());
+
+    std::string eventDate =
+        std::string(body["event_date"].s());
+
+    std::string registrationLink =
+        body.has("registration_link")
+        ? std::string(body["registration_link"].s())
+        : "";
+
+    std::string imagePath =
+        body.has("image_path")
+        ? std::string(body["image_path"].s())
+        : "";
+
+    const char* updateSql =
+        "UPDATE events SET "
+        "title=?, "
+        "description=?, "
+        "category=?, "
+        "location=?, "
+        "event_date=?, "
+        "registration_link=?, "
+        "image_path=? "
+        "WHERE id=?";
+
+    sqlite3_stmt* updateStmt;
+
+    if (sqlite3_prepare_v2(
+            db,
+            updateSql,
+            -1,
+            &updateStmt,
+            nullptr) != SQLITE_OK)
+    {
+        return crow::response(
+            500,
+            "Failed to prepare update query"
+        );
+    }
+
+    sqlite3_bind_text(updateStmt, 1,
+        title.c_str(), -1,
+        SQLITE_TRANSIENT);
+
+    sqlite3_bind_text(updateStmt, 2,
+        description.c_str(), -1,
+        SQLITE_TRANSIENT);
+
+    sqlite3_bind_text(updateStmt, 3,
+        category.c_str(), -1,
+        SQLITE_TRANSIENT);
+
+    sqlite3_bind_text(updateStmt, 4,
+        location.c_str(), -1,
+        SQLITE_TRANSIENT);
+
+    sqlite3_bind_text(updateStmt, 5,
+        eventDate.c_str(), -1,
+        SQLITE_TRANSIENT);
+
+    sqlite3_bind_text(updateStmt, 6,
+        registrationLink.c_str(), -1,
+        SQLITE_TRANSIENT);
+
+    sqlite3_bind_text(updateStmt, 7,
+        imagePath.c_str(), -1,
+        SQLITE_TRANSIENT);
+
+    sqlite3_bind_int(updateStmt, 8,
+        eventId);
+
+    rc = sqlite3_step(updateStmt);
+
+    sqlite3_finalize(updateStmt);
+
+    if (rc != SQLITE_DONE)
+    {
+        return crow::response(
+            500,
+            "Failed to update event"
+        );
+    }
+
+    crow::json::wvalue res;
+    res["message"] =
+        "Event updated successfully";
+
+    return crow::response(res); });
 }
