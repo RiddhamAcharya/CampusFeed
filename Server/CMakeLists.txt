@@ -17,6 +17,7 @@ add_executable(server
     routes/notification_routes.cpp
     routes/interaction_routes.cpp
     routes/user_routes.cpp
+    routes/event_routes.cpp
     utils/hash.cpp
     utils/jwt.cpp
 )
