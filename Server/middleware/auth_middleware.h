@@ -12,12 +12,16 @@ struct AuthMiddleware
         int user_id = -1;
     };
 
-    void before_handle(crow::request& req,
-                       crow::response& res,
-                       context& ctx)
+    void before_handle(crow::request &req,
+                       crow::response &res,
+                       context &ctx)
     {
         // Public routes
-        if (req.url == "/login" || req.url == "/signup")
+        if (
+            req.url == "/login" ||
+            req.url == "/signup" ||
+            req.url == "/health" ||
+            req.url == "/db-test")
         {
             return;
         }
@@ -61,9 +65,9 @@ struct AuthMiddleware
         ctx.user_id = get_user_id_from_token(token);
     }
 
-    void after_handle(crow::request& req,
-                      crow::response& res,
-                      context& ctx)
+    void after_handle(crow::request &req,
+                      crow::response &res,
+                      context &ctx)
     {
         // Nothing needed for now
     }

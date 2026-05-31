@@ -4,6 +4,7 @@
 #include "routes/notification_routes.h"
 #include "routes/interaction_routes.h" 
 #include "routes/user_routes.h"
+#include "routes/event_routes.h"
 #include "middleware/auth_middleware.h"
 #include "utils/app.h"
 
@@ -40,6 +41,8 @@ int main() {
     setupInteractionRoutes(app, db);
 
     setupUserRoutes(app, db);
+
+    setupEventRoutes(app, db);
     
     app.port(18080).multithreaded().run();
 }
