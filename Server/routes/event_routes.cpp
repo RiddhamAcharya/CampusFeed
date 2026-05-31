@@ -589,4 +589,160 @@ void setupEventRoutes(App &app, Database &database)
         "Event updated successfully";
 
     return crow::response(res); });
+
+    // Delete Events by Id
+    CROW_ROUTE(app, "/events/<int>")
+        .methods("DELETE"_method)([&app, &database](const crow::request &req, int eventId)
+                                  {
+    auto& ctx =
+        app.get_context<AuthMiddleware>(req);
+
+    int userId = ctx.user_id;
+
+    sqlite3* db = database.db;
+
+    // Get user role
+
+    const char* roleSql =
+        "SELECT role FROM users WHERE id = ?";
+
+    sqlite3_stmt* roleStmt;
+
+    if (sqlite3_prepare_v2(
+            db,
+            roleSql,
+            -1,
+            &roleStmt,
+            nullptr) != SQLITE_OK)
+    {
+        return crow::response(
+            500,
+            "Failed to prepare role query"
+        );
+    }
+
+    sqlite3_bind_int(roleStmt, 1, userId);
+
+    int rc = sqlite3_step(roleStmt);
+
+    if (rc != SQLITE_ROW)
+    {
+        sqlite3_finalize(roleStmt);
+
+        return crow::response(
+            404,
+            "User not found"
+        );
+    }
+
+    std::string role =
+        (const char*)sqlite3_column_text(roleStmt, 0);
+
+    sqlite3_finalize(roleStmt);
+
+    if (role == "student")
+    {
+        return crow::response(
+            403,
+            "Students cannot delete events"
+        );
+    }
+
+    // Get event owner
+
+    const char* ownerSql =
+        "SELECT organizer_id "
+        "FROM events "
+        "WHERE id = ?";
+
+    sqlite3_stmt* ownerStmt;
+
+    if (sqlite3_prepare_v2(
+            db,
+            ownerSql,
+            -1,
+            &ownerStmt,
+            nullptr) != SQLITE_OK)
+    {
+        return crow::response(
+            500,
+            "Failed to prepare owner query"
+        );
+    }
+
+    sqlite3_bind_int(ownerStmt, 1, eventId);
+
+    rc = sqlite3_step(ownerStmt);
+
+    if (rc != SQLITE_ROW)
+    {
+        sqlite3_finalize(ownerStmt);
+
+        return crow::response(
+            404,
+            "Event not found"
+        );
+    }
+
+    int organizerId =
+        sqlite3_column_int(ownerStmt, 0);
+
+    sqlite3_finalize(ownerStmt);
+
+    // Permission check
+
+    if (role != "admin" &&
+        organizerId != userId)
+    {
+        return crow::response(
+            403,
+            "You can only delete your own events"
+        );
+    }
+
+    // Delete event
+
+    const char* deleteSql =
+        "DELETE FROM events "
+        "WHERE id = ?";
+
+    sqlite3_stmt* deleteStmt;
+
+    if (sqlite3_prepare_v2(
+            db,
+            deleteSql,
+            -1,
+            &deleteStmt,
+            nullptr) != SQLITE_OK)
+    {
+        return crow::response(
+            500,
+            "Failed to prepare delete query"
+        );
+    }
+
+    sqlite3_bind_int(
+        deleteStmt,
+        1,
+        eventId
+    );
+
+    rc = sqlite3_step(deleteStmt);
+
+    sqlite3_finalize(deleteStmt);
+
+    if (rc != SQLITE_DONE)
+    {
+        return crow::response(
+            500,
+            "Failed to delete event"
+        );
+    }
+
+    crow::json::wvalue res;
+
+    res["message"] =
+        "Event deleted successfully";
+
+    return crow::response(res); });
 }
