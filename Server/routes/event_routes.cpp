@@ -2,15 +2,15 @@
 
 #include <sqlite3.h>
 
-void setupEventRoutes(App& app, Database& database)
+void setupEventRoutes(App &app, Database &database)
 {
 
     // Get events route to fetch all the available events from the database
     CROW_ROUTE(app, "/events")
-    .methods("GET"_method)
+        .methods("GET"_method)
 
-    ([&database]()
-    {
+            ([&database]()
+             {
         sqlite3* db = database.db;
 
         const char* sql =
@@ -75,6 +75,215 @@ void setupEventRoutes(App& app, Database& database)
 
         sqlite3_finalize(stmt);
 
-        return crow::response(result);
-    });
+        return crow::response(result); });
+
+    // Post event route to allow users to create new events
+    CROW_ROUTE(app, "/events")
+        .methods("POST"_method)([&app, &database](const crow::request &req)
+                                {
+    auto& ctx = app.get_context<AuthMiddleware>(req);
+
+    int userId = ctx.user_id;
+
+    sqlite3* db = database.db;
+
+    // Verify user role
+
+    const char* roleSql =
+        "SELECT role FROM users WHERE id = ?";
+
+    sqlite3_stmt* roleStmt;
+
+    if (sqlite3_prepare_v2(
+            db,
+            roleSql,
+            -1,
+            &roleStmt,
+            nullptr) != SQLITE_OK)
+    {
+        return crow::response(500, "Failed to prepare role query");
+    }
+
+    sqlite3_bind_int(roleStmt, 1, userId);
+
+    int rc = sqlite3_step(roleStmt);
+
+    if (rc != SQLITE_ROW)
+    {
+        sqlite3_finalize(roleStmt);
+        return crow::response(404, "User not found");
+    }
+
+    std::string role =
+        (const char*)sqlite3_column_text(roleStmt, 0);
+
+    sqlite3_finalize(roleStmt);
+
+    if (role != "organizer" && role != "admin")
+    {
+        return crow::response(
+            403,
+            "Only organizers and admins can create events"
+        );
+    }
+
+    // Parse JSON body
+
+    auto body = crow::json::load(req.body);
+
+    if (!body)
+    {
+        return crow::response(400, "Invalid JSON");
+    }
+
+    std::string title =
+        std::string(body["title"].s());
+
+    std::string description =
+        std::string(body["description"].s());
+
+    std::string category =
+        std::string(body["category"].s());
+
+    std::string location =
+        std::string(body["location"].s());
+
+    std::string eventDate =
+        std::string(body["event_date"].s());
+
+    std::string registrationLink =
+        body.has("registration_link")
+        ? std::string(body["registration_link"].s())
+        : "";
+
+    std::string imagePath =
+        body.has("image_path")
+        ? std::string(body["image_path"].s())
+        : "";
+
+    // Validation
+
+    if (
+        title.empty() ||
+        description.empty() ||
+        category.empty() ||
+        location.empty() ||
+        eventDate.empty()
+    )
+    {
+        return crow::response(
+            400,
+            "Missing required fields"
+        );
+    }
+
+    // Insert event
+
+    const char* insertSql =
+        "INSERT INTO events ("
+        "title, "
+        "description, "
+        "category, "
+        "location, "
+        "event_date, "
+        "registration_link, "
+        "image_path, "
+        "organizer_id"
+        ") "
+        "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+    sqlite3_stmt* insertStmt;
+
+    if (sqlite3_prepare_v2(
+            db,
+            insertSql,
+            -1,
+            &insertStmt,
+            nullptr) != SQLITE_OK)
+    {
+        return crow::response(
+            500,
+            "Failed to prepare insert statement"
+        );
+    }
+
+    sqlite3_bind_text(
+        insertStmt,
+        1,
+        title.c_str(),
+        -1,
+        SQLITE_TRANSIENT
+    );
+
+    sqlite3_bind_text(
+        insertStmt,
+        2,
+        description.c_str(),
+        -1,
+        SQLITE_TRANSIENT
+    );
+
+    sqlite3_bind_text(
+        insertStmt,
+        3,
+        category.c_str(),
+        -1,
+        SQLITE_TRANSIENT
+    );
+
+    sqlite3_bind_text(
+        insertStmt,
+        4,
+        location.c_str(),
+        -1,
+        SQLITE_TRANSIENT
+    );
+
+    sqlite3_bind_text(
+        insertStmt,
+        5,
+        eventDate.c_str(),
+        -1,
+        SQLITE_TRANSIENT
+    );
+
+    sqlite3_bind_text(
+        insertStmt,
+        6,
+        registrationLink.c_str(),
+        -1,
+        SQLITE_TRANSIENT
+    );
+
+    sqlite3_bind_text(
+        insertStmt,
+        7,
+        imagePath.c_str(),
+        -1,
+        SQLITE_TRANSIENT
+    );
+
+    sqlite3_bind_int(
+        insertStmt,
+        8,
+        userId
+    );
+
+    rc = sqlite3_step(insertStmt);
+
+    sqlite3_finalize(insertStmt);
+
+    if (rc != SQLITE_DONE)
+    {
+        return crow::response(
+            500,
+            "Failed to create event"
+        );
+    }
+
+    crow::json::wvalue response;
+
+    response["message"] = "Event created successfully";
+
+    return crow::response(response); });
 }
