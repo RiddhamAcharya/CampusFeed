@@ -15,7 +15,8 @@ void setupNotificationRoutes(App& app, Database& database) {
         const char* sql =
             "SELECT id, title, message, is_read "
             "FROM notifications "
-            "WHERE user_id = ?;";
+            "WHERE user_id = ? "
+            "ORDER BY created_at DESC;";
 
         sqlite3_stmt* stmt;
         sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
