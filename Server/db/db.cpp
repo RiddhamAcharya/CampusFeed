@@ -43,6 +43,8 @@ bool Database::execute(const std::string& query) {
 }
 void Database::loadAllSchemas(const std::string& folderPath) {
 
+    //Load Schemas files
+    
     std::vector<std::string> files = {
 
         folderPath + "/users.sql",
