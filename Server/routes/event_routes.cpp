@@ -287,6 +287,90 @@ void setupEventRoutes(App &app, Database &database)
 
     return crow::response(response); });
 
+    // Get all events created by the logged-in user
+
+    CROW_ROUTE(app, "/events/my-events")
+        .methods("GET"_method)
+
+            ([&app, &database](const crow::request &req)
+             {
+    auto& ctx =
+        app.get_context<AuthMiddleware>(req);
+
+    int userId = ctx.user_id;
+
+    sqlite3* db = database.db;
+
+    const char* sql =
+        "SELECT id, title, description, category, "
+        "location, event_date, registration_link, "
+        "image_path, organizer_id, created_at "
+        "FROM events "
+        "WHERE organizer_id = ?";
+
+    sqlite3_stmt* stmt;
+
+    if (sqlite3_prepare_v2(
+            db,
+            sql,
+            -1,
+            &stmt,
+            nullptr) != SQLITE_OK)
+    {
+        return crow::response(
+            500,
+            "Failed to prepare query"
+        );
+    }
+
+    sqlite3_bind_int(stmt, 1, userId);
+
+    crow::json::wvalue result;
+    int index = 0;
+
+    while (sqlite3_step(stmt) == SQLITE_ROW)
+    {
+        result[index]["id"] =
+            sqlite3_column_int(stmt, 0);
+
+        result[index]["title"] =
+            (const char*)sqlite3_column_text(stmt, 1);
+
+        result[index]["description"] =
+            (const char*)sqlite3_column_text(stmt, 2);
+
+        result[index]["category"] =
+            (const char*)sqlite3_column_text(stmt, 3);
+
+        result[index]["location"] =
+            (const char*)sqlite3_column_text(stmt, 4);
+
+        result[index]["event_date"] =
+            (const char*)sqlite3_column_text(stmt, 5);
+
+        result[index]["registration_link"] =
+            sqlite3_column_text(stmt, 6)
+            ? (const char*)sqlite3_column_text(stmt, 6)
+            : "";
+
+        result[index]["image_path"] =
+            sqlite3_column_text(stmt, 7)
+            ? (const char*)sqlite3_column_text(stmt, 7)
+            : "";
+
+        result[index]["organizer_id"] =
+            sqlite3_column_int(stmt, 8);
+
+        result[index]["created_at"] =
+            (const char*)sqlite3_column_text(stmt, 9);
+
+        index++;
+    }
+
+    sqlite3_finalize(stmt);
+
+    return crow::response(result); });
+
     // Get event by ID route to fetch details of a specific event
     CROW_ROUTE(app, "/events/<int>")
         .methods("GET"_method)([&database](int eventId)
