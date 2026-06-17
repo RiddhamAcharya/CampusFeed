@@ -1,4 +1,5 @@
 #include "event_routes.h"
+#include "../services/event_service.h"
 
 #include <sqlite3.h>
 
@@ -76,6 +77,68 @@ void setupEventRoutes(App &app, Database &database)
         sqlite3_finalize(stmt);
 
         return crow::response(result); });
+
+    // Search events
+    CROW_ROUTE(app, "/events/search")
+        .methods("GET"_method)([&database](const crow::request &req)
+                               {
+    std::string q =
+        req.url_params.get("q")
+        ? req.url_params.get("q")
+        : "";
+
+    auto events =
+        EventService::search(database.db, q);
+
+    crow::json::wvalue res;
+    int i = 0;
+
+    for (auto& e : events)
+    {
+        res[i]["id"] = e.id;
+        res[i]["title"] = e.title;
+        res[i]["category"] = e.category;
+        res[i]["location"] = e.location;
+        i++;
+    }
+
+    return crow::response(res); });
+
+    // Filter Events
+    CROW_ROUTE(app, "/events/filter")
+        .methods("GET"_method)([&database](const crow::request &req)
+                               {
+    std::string category =
+        req.url_params.get("category")
+        ? req.url_params.get("category")
+        : "";
+
+    std::string location =
+        req.url_params.get("location")
+        ? req.url_params.get("location")
+        : "";
+
+    std::string date =
+        req.url_params.get("date")
+        ? req.url_params.get("date")
+        : "";
+
+    auto events =
+        EventService::filter(database.db, category, location, date);
+
+    crow::json::wvalue res;
+    int i = 0;
+
+    for (auto& e : events)
+    {
+        res[i]["id"] = e.id;
+        res[i]["title"] = e.title;
+        res[i]["category"] = e.category;
+        res[i]["location"] = e.location;
+        i++;
+    }
+
+    return crow::response(res); });
 
     // Post event route to allow users to create new events
     CROW_ROUTE(app, "/events")

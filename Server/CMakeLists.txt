@@ -20,6 +20,7 @@ add_executable(server
     routes/event_routes.cpp
     utils/hash.cpp
     utils/jwt.cpp
+    services/event_service.cpp
 )
 
 target_include_directories(server PRIVATE
