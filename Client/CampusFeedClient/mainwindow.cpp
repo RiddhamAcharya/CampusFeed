@@ -1,14 +1,9 @@
-#include "mainwindow.h"
-#include "./ui_mainwindow.h"
+loginPage = new LoginPage(this);
+signupPage = new SignupPage(this);
+dashboardPage = new DashboardPage(this);
 
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
-{
-    ui->setupUi(this);
-}
+ui->stackedWidget->addWidget(loginPage);
+ui->stackedWidget->addWidget(signupPage);
+ui->stackedWidget->addWidget(dashboardPage);
 
-MainWindow::~MainWindow()
-{
-    delete ui;
-}
+ui->stackedWidget->setCurrentWidget(loginPage);

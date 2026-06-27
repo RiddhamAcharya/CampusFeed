@@ -23,6 +23,9 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(CampusFeedClient
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+        LoginPage.h LoginPage.cpp LoginPage.ui
+        SignupPage.h SignupPage.cpp SignupPage.ui
+        DashboardPage.h DashboardPage.cpp DashboardPage.ui
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET CampusFeedClient APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
