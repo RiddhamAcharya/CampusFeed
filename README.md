@@ -91,7 +91,7 @@ Students should not miss opportunities due to poor information flow.
 CampusFeed is designed specifically for Nepalese institutions where:
 - Internet access may be inconsistent  
 - Systems must be lightweight  
-- Centralization is lacking  
+- Centralization is missing  
 
 ---
 
