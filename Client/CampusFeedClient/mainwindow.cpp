@@ -1,9 +1,27 @@
-loginPage = new LoginPage(this);
-signupPage = new SignupPage(this);
-dashboardPage = new DashboardPage(this);
+#include "mainwindow.h"
+#include "ui_mainwindow.h"
 
-ui->stackedWidget->addWidget(loginPage);
-ui->stackedWidget->addWidget(signupPage);
-ui->stackedWidget->addWidget(dashboardPage);
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
 
-ui->stackedWidget->setCurrentWidget(loginPage);
+    // Create pages
+    loginPage = new LoginPage(this);
+    signupPage = new SignUpPage(this);
+    dashboardPage = new DashBoardPage(this);
+
+    // Add pages to stacked widget
+    ui->stackedWidget->addWidget(loginPage);
+    ui->stackedWidget->addWidget(signupPage);
+    ui->stackedWidget->addWidget(dashboardPage);
+
+    // Show login page first
+    ui->stackedWidget->setCurrentWidget(loginPage);
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}

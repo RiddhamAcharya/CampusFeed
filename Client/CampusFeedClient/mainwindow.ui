@@ -29,14 +29,14 @@
    <widget class="QStackedWidget" name="stackedWidget">
     <property name="geometry">
      <rect>
-      <x>310</x>
-      <y>240</y>
-      <width>120</width>
-      <height>80</height>
+      <x>0</x>
+      <y>0</y>
+      <width>1171</width>
+      <height>601</height>
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="page"/>
     <widget class="QWidget" name="page_2"/>
