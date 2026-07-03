@@ -9,6 +9,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Create pages
     loginPage = new LoginPage(this);
+
     connect(loginPage,
             &LoginPage::loginSuccessful,
             this,
@@ -23,7 +24,25 @@ MainWindow::MainWindow(QWidget *parent)
             {
                 ui->stackedWidget->setCurrentWidget(signupPage);
             });
+
     signupPage = new SignUpPage(this);
+
+    connect(signupPage,
+            &SignUpPage::loginRequested,
+            this,
+            [this]()
+            {
+                ui->stackedWidget->setCurrentWidget(loginPage);
+            });
+
+    connect(signupPage,
+            &SignUpPage::signupSuccessful,
+            this,
+            [this]()
+            {
+                ui->stackedWidget->setCurrentWidget(loginPage);
+            });
+
     dashboardPage = new DashBoardPage(this);
 
     // Add pages to stacked widget
