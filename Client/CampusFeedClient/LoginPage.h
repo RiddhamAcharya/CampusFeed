@@ -2,6 +2,8 @@
 #define LOGINPAGE_H
 
 #include <QWidget>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
 
 namespace Ui {
 class LoginPage;
@@ -15,8 +17,17 @@ public:
     explicit LoginPage(QWidget *parent = nullptr);
     ~LoginPage();
 
+signals:
+    void loginSuccessful();
+    void signupRequested();
+
+private slots:
+    void onLoginClicked();
+    void onReplyFinished(QNetworkReply *reply);
+
 private:
     Ui::LoginPage *ui;
+    QNetworkAccessManager *networkManager;
 };
 
-#endif // LOGINPAGE_H
+#endif
