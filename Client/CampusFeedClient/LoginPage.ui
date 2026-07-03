@@ -10,16 +10,16 @@
     <height>720</height>
    </rect>
   </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
   <property name="minimumSize">
    <size>
-    <width>1170</width>
-    <height>700</height>
-   </size>
-  </property>
-  <property name="maximumSize">
-   <size>
-    <width>1280</width>
-    <height>800</height>
+    <width>0</width>
+    <height>0</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -130,10 +130,22 @@ QLineEdit:focus {
     background-color: #0d47a1;
 }
 
-/* ── Sign-up label ── */
-#signupLabel {
+/* ── Sign-up row ── */
+#signupPromptLabel {
     font-size: 12px;
     color: #888899;
+}
+#signupButton {
+    font-size: 12px;
+    font-weight: bold;
+    color: #f47920;
+    background: transparent;
+    border: none;
+    padding: 0px;
+    text-decoration: underline;
+}
+#signupButton:hover {
+    color: #e65100;
 }
    </string>
   </property>
@@ -187,7 +199,7 @@ QLineEdit:focus {
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap>Assets/images/1.png</pixmap>
+         <pixmap resource="resources.qrc">:/Assets/images/1.png</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -332,15 +344,64 @@ QLineEdit:focus {
         </property>
        </widget>
       </item>
-      <item alignment="Qt::AlignmentFlag::AlignHCenter">
-       <widget class="QLabel" name="signupLabel">
-        <property name="text">
-         <string>Don't have an account? &lt;span style=&quot; font-weight:bold; color:#f47920;&quot;&gt;Sign Up&lt;/span&gt;</string>
+      <item>
+       <layout class="QHBoxLayout" name="signupLayout">
+        <property name="spacing">
+         <number>4</number>
         </property>
-        <property name="textFormat">
-         <enum>Qt::TextFormat::RichText</enum>
-        </property>
-       </widget>
+        <item>
+         <spacer name="signupLeftSpacer">
+          <property name="orientation">
+           <enum>Qt::Orientation::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Policy::Expanding</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QLabel" name="signupPromptLabel">
+          <property name="text">
+           <string>Don't have an account?</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="signupButton">
+          <property name="cursor">
+           <cursorShape>PointingHandCursor</cursorShape>
+          </property>
+          <property name="text">
+           <string>Sign Up</string>
+          </property>
+          <property name="flat">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="signupRightSpacer">
+          <property name="orientation">
+           <enum>Qt::Orientation::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Policy::Expanding</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
       </item>
       <item>
        <spacer name="rightBottomSpacer">
@@ -365,6 +426,7 @@ QLineEdit:focus {
   <tabstop>passwordEdit</tabstop>
   <tabstop>rememberCheckBox</tabstop>
   <tabstop>loginButton</tabstop>
+  <tabstop>signupButton</tabstop>
  </tabstops>
  <resources/>
  <connections/>

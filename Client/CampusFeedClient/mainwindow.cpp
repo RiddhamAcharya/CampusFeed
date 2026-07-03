@@ -9,6 +9,20 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Create pages
     loginPage = new LoginPage(this);
+    connect(loginPage,
+            &LoginPage::loginSuccessful,
+            this,
+            [this]()
+            {
+                ui->stackedWidget->setCurrentWidget(dashboardPage);
+            });
+    connect(loginPage,
+            &LoginPage::signupRequested,
+            this,
+            [this]()
+            {
+                ui->stackedWidget->setCurrentWidget(signupPage);
+            });
     signupPage = new SignUpPage(this);
     dashboardPage = new DashBoardPage(this);
 
