@@ -32,6 +32,10 @@ set(PROJECT_SOURCES
     DashboardPage.h
     DashboardPage.ui
 
+    LandingPage.h
+    LandingPage.cpp
+    LandingPage.ui
+
     resources.qrc
 )
 
@@ -41,6 +45,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(CampusFeedClient
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+        LandingPage.h LandingPage.cpp LandingPage.ui
     )
 
 else()

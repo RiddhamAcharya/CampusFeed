@@ -78,7 +78,7 @@
          <string notr="true">background-color: white; border-radius: 8px;</string>
         </property>
         <property name="pixmap">
-         <pixmap>Assets/images/Logo.png</pixmap>
+         <pixmap resource="resources.qrc">:/Assets/images/Logo.png</pixmap>
         </property>
         <property name="alignment">
          <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -490,7 +490,9 @@ QPushButton:hover { border: 1px solid #2F80ED; }</string>
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
  <connections/>
  <buttongroups>
   <buttongroup name="roleButtonGroup"/>

@@ -7,30 +7,72 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    // Create pages
-    loginPage = new LoginPage(this);
+    // ============================
+    // Create Pages
+    // ============================
 
-    connect(loginPage,
-            &LoginPage::loginSuccessful,
+    landingPage = new LandingPage(this);
+    loginPage = new LoginPage(this);
+    signupPage = new SignUpPage(this);
+    dashboardPage = new DashBoardPage(this);
+
+    // ============================
+    // Add to Stacked Widget
+    // ============================
+
+    ui->stackedWidget->addWidget(landingPage);
+    ui->stackedWidget->addWidget(loginPage);
+    ui->stackedWidget->addWidget(signupPage);
+    ui->stackedWidget->addWidget(dashboardPage);
+
+    // ============================
+    // Landing Page Navigation
+    // ============================
+
+    connect(landingPage,
+            &LandingPage::loginRequested,
             this,
-            [this]()
+            [=]()
             {
-                ui->stackedWidget->setCurrentWidget(dashboardPage);
+                ui->stackedWidget->setCurrentWidget(loginPage);
             });
-    connect(loginPage,
-            &LoginPage::signupRequested,
+
+    connect(landingPage,
+            &LandingPage::signupRequested,
             this,
-            [this]()
+            [=]()
             {
                 ui->stackedWidget->setCurrentWidget(signupPage);
             });
 
-    signupPage = new SignUpPage(this);
+    // ============================
+    // Login Page Navigation
+    // ============================
+
+    connect(loginPage,
+            &LoginPage::signupRequested,
+            this,
+            [=]()
+            {
+                ui->stackedWidget->setCurrentWidget(signupPage);
+            });
+
+    connect(loginPage,
+            &LoginPage::loginSuccessful,
+            this,
+            [=]()
+            {
+                ui->stackedWidget->setCurrentWidget(dashboardPage);
+            });
+
+    // ============================
+    // Signup Page Navigation
+    // ============================
 
     connect(signupPage,
             &SignUpPage::loginRequested,
             this,
-            [this]()
+            [=]()
             {
                 ui->stackedWidget->setCurrentWidget(loginPage);
             });
@@ -38,20 +80,16 @@ MainWindow::MainWindow(QWidget *parent)
     connect(signupPage,
             &SignUpPage::signupSuccessful,
             this,
-            [this]()
+            [=]()
             {
                 ui->stackedWidget->setCurrentWidget(loginPage);
             });
 
-    dashboardPage = new DashBoardPage(this);
+    // ============================
+    // Start Application
+    // ============================
 
-    // Add pages to stacked widget
-    ui->stackedWidget->addWidget(loginPage);
-    ui->stackedWidget->addWidget(signupPage);
-    ui->stackedWidget->addWidget(dashboardPage);
-
-    // Show login page first
-    ui->stackedWidget->setCurrentWidget(loginPage);
+    ui->stackedWidget->setCurrentWidget(landingPage);
 }
 
 MainWindow::~MainWindow()

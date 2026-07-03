@@ -30,6 +30,7 @@ LoginPage::LoginPage(QWidget *parent)
             {
                 emit signupRequested();
             });
+
 }
 
 LoginPage::~LoginPage()
