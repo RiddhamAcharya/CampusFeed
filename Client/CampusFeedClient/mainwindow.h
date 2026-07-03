@@ -6,6 +6,7 @@
 #include "LoginPage.h"
 #include "SignupPage.h"
 #include "DashboardPage.h"
+#include "LandingPage.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -27,6 +28,7 @@ private:
     LoginPage *loginPage;
     SignUpPage *signupPage;
     DashBoardPage *dashboardPage;
+    LandingPage *landingPage;
 };
 
 #endif // MAINWINDOW_H

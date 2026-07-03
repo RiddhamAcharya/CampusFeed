@@ -6,14 +6,495 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>1280</width>
+    <height>720</height>
    </rect>
   </property>
-  <property name="windowTitle">
-   <string>Form</string>
+  <property name="minimumSize">
+   <size>
+    <width>1170</width>
+    <height>700</height>
+   </size>
   </property>
+  <property name="windowTitle">
+   <string>Sign Up</string>
+  </property>
+  <layout class="QHBoxLayout" name="mainLayout">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="QFrame" name="leftFrame">
+     <property name="styleSheet">
+      <string notr="true">background-color: #EAF0FF;</string>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::Shape::StyledPanel</enum>
+     </property>
+     <layout class="QVBoxLayout" name="leftFrameLayout">
+      <property name="leftMargin">
+       <number>40</number>
+      </property>
+      <property name="rightMargin">
+       <number>40</number>
+      </property>
+      <item>
+       <spacer name="leftTopSpacer">
+        <property name="orientation">
+         <enum>Qt::Orientation::Vertical</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Policy::Expanding</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QLabel" name="illustrationLabel">
+        <property name="minimumSize">
+         <size>
+          <width>310</width>
+          <height>270</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: white; border-radius: 8px;</string>
+        </property>
+        <property name="pixmap">
+         <pixmap resource="resources.qrc">:/Assets/images/Logo.png</pixmap>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignmentFlag::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="logoLabel">
+        <property name="styleSheet">
+         <string notr="true">font-size: 28px; font-weight: bold; color: #1A1A1A; margin-top: 16px;</string>
+        </property>
+        <property name="text">
+         <string>CampusFeed</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignmentFlag::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="taglineLabel">
+        <property name="styleSheet">
+         <string notr="true">font-size: 13px; color: #6B6B6B; letter-spacing: 1px;</string>
+        </property>
+        <property name="text">
+         <string>Connect • Discover • Engage</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignmentFlag::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="leftBottomSpacer">
+        <property name="orientation">
+         <enum>Qt::Orientation::Vertical</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Policy::Expanding</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QFrame" name="rightFrame">
+     <property name="styleSheet">
+      <string notr="true">background-color: white;</string>
+     </property>
+     <layout class="QVBoxLayout" name="rightFrameLayout">
+      <property name="leftMargin">
+       <number>60</number>
+      </property>
+      <property name="topMargin">
+       <number>30</number>
+      </property>
+      <property name="rightMargin">
+       <number>60</number>
+      </property>
+      <property name="bottomMargin">
+       <number>30</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="welcomeLabel">
+        <property name="styleSheet">
+         <string notr="true">font-size: 26px; font-weight: bold; color: #1A1A1A;</string>
+        </property>
+        <property name="text">
+         <string>Create Account</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="subtitleLabel">
+        <property name="styleSheet">
+         <string notr="true">font-size: 13px; color: #6B6B6B;</string>
+        </property>
+        <property name="text">
+         <string>Sign up to join CampusFeed</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="afterSubtitleSpacer">
+        <property name="orientation">
+         <enum>Qt::Orientation::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>18</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QLabel" name="fullNameLabel">
+        <property name="styleSheet">
+         <string notr="true">font-size: 11px; font-weight: bold; color: #444444; letter-spacing: 1px;</string>
+        </property>
+        <property name="text">
+         <string>FULL NAME</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="fullNameEdit">
+        <property name="styleSheet">
+         <string notr="true">border: none; border-bottom: 2px solid orange; padding: 6px; color: #1A1A1A; background: transparent;</string>
+        </property>
+        <property name="placeholderText">
+         <string>Enter your full name</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="emailLabel">
+        <property name="styleSheet">
+         <string notr="true">font-size: 11px; font-weight: bold; color: #444444; letter-spacing: 1px; margin-top: 10px;</string>
+        </property>
+        <property name="text">
+         <string>EMAIL ADDRESS</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="emailEdit">
+        <property name="styleSheet">
+         <string notr="true">border: none; border-bottom: 2px solid orange; padding: 6px; color: #1A1A1A; background: transparent;</string>
+        </property>
+        <property name="placeholderText">
+         <string>Enter your email</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="passwordLabel">
+        <property name="styleSheet">
+         <string notr="true">font-size: 11px; font-weight: bold; color: #444444; letter-spacing: 1px; margin-top: 10px;</string>
+        </property>
+        <property name="text">
+         <string>PASSWORD</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="passwordEdit">
+        <property name="styleSheet">
+         <string notr="true">border: none; border-bottom: 2px solid orange; padding: 6px; color: #1A1A1A; background: transparent;</string>
+        </property>
+        <property name="echoMode">
+         <enum>QLineEdit::EchoMode::Password</enum>
+        </property>
+        <property name="placeholderText">
+         <string>Enter your password</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="roleLabel">
+        <property name="styleSheet">
+         <string notr="true">font-size: 11px; font-weight: bold; color: #444444; letter-spacing: 1px; margin-top: 10px;</string>
+        </property>
+        <property name="text">
+         <string>ROLE</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QFrame" name="roleFrame">
+        <property name="styleSheet">
+         <string notr="true">QPushButton { border: 1px solid #D0D5DD; background-color: white; color: #444444; border-radius: 6px; padding: 8px 0px; font-size: 13px; }
+QPushButton:checked { background-color: #2F80ED; color: white; border: 1px solid #2F80ED; font-weight: bold; }
+QPushButton:hover { border: 1px solid #2F80ED; }</string>
+        </property>
+        <layout class="QHBoxLayout" name="roleFrameLayout">
+         <property name="spacing">
+          <number>8</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QPushButton" name="studentRoleButton">
+           <property name="cursor">
+            <cursorShape>PointingHandCursor</cursorShape>
+           </property>
+           <property name="text">
+            <string>Student</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+           <attribute name="buttonGroup">
+            <string notr="true">roleButtonGroup</string>
+           </attribute>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="organizerRoleButton">
+           <property name="cursor">
+            <cursorShape>PointingHandCursor</cursorShape>
+           </property>
+           <property name="text">
+            <string>Organizer</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <attribute name="buttonGroup">
+            <string notr="true">roleButtonGroup</string>
+           </attribute>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="adminRoleButton">
+           <property name="cursor">
+            <cursorShape>PointingHandCursor</cursorShape>
+           </property>
+           <property name="text">
+            <string>Admin</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <attribute name="buttonGroup">
+            <string notr="true">roleButtonGroup</string>
+           </attribute>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="institutionLabel">
+        <property name="styleSheet">
+         <string notr="true">font-size: 11px; font-weight: bold; color: #444444; letter-spacing: 1px; margin-top: 10px;</string>
+        </property>
+        <property name="text">
+         <string>INSTITUTION</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="institutionEdit">
+        <property name="styleSheet">
+         <string notr="true">border: none; border-bottom: 2px solid orange; padding: 6px; color: #1A1A1A; background: transparent;</string>
+        </property>
+        <property name="placeholderText">
+         <string>Enter institution (optional)</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="profileImageLabel">
+        <property name="styleSheet">
+         <string notr="true">font-size: 11px; font-weight: bold; color: #444444; letter-spacing: 1px; margin-top: 10px;</string>
+        </property>
+        <property name="text">
+         <string>PROFILE IMAGE</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="profileImageLayout">
+        <item>
+         <widget class="QLineEdit" name="profileImageEdit">
+          <property name="styleSheet">
+           <string notr="true">border: none; border-bottom: 2px solid orange; padding: 6px; color: #1A1A1A; background: transparent;</string>
+          </property>
+          <property name="placeholderText">
+           <string>Select profile image</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="browseButton">
+          <property name="styleSheet">
+           <string notr="true">background-color: #E5E7EB; color: #1A1A1A; border-radius: 4px; padding: 6px 14px;</string>
+          </property>
+          <property name="text">
+           <string>Browse</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QPushButton" name="registerButton">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>44</height>
+         </size>
+        </property>
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: #2F80ED; color: white; border-radius: 6px; padding: 12px; font-weight: bold; margin-top: 16px;</string>
+        </property>
+        <property name="text">
+         <string>SIGN UP</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="loginRedirectLayout">
+        <property name="topMargin">
+         <number>10</number>
+        </property>
+        <item>
+         <spacer name="loginRedirectLeftSpacer">
+          <property name="orientation">
+           <enum>Qt::Orientation::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Policy::Expanding</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QLabel" name="loginRedirectLabel">
+          <property name="styleSheet">
+           <string notr="true">font-size: 13px; color: #6B6B6B;</string>
+          </property>
+          <property name="text">
+           <string>Already have an account?</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="loginRedirectButton">
+          <property name="cursor">
+           <cursorShape>PointingHandCursor</cursorShape>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QPushButton { border: none; background: transparent; color: #2F80ED; font-size: 13px; font-weight: bold; padding: 0px; } QPushButton:hover { color: #1B5FC1; text-decoration: underline; }</string>
+          </property>
+          <property name="text">
+           <string>Login</string>
+          </property>
+          <property name="flat">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="loginRedirectRightSpacer">
+          <property name="orientation">
+           <enum>Qt::Orientation::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Policy::Expanding</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <spacer name="rightBottomSpacer">
+        <property name="orientation">
+         <enum>Qt::Orientation::Vertical</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Policy::Expanding</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
  <connections/>
+ <buttongroups>
+  <buttongroup name="roleButtonGroup"/>
+ </buttongroups>
 </ui>

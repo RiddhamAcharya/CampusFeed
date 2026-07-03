@@ -2,6 +2,8 @@
 #define SIGNUPPAGE_H
 
 #include <QWidget>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
 
 namespace Ui {
 class SignUpPage;
@@ -15,8 +17,22 @@ public:
     explicit SignUpPage(QWidget *parent = nullptr);
     ~SignUpPage();
 
+signals:
+    void signupSuccessful();
+    void loginRequested();
+
+private slots:
+    void onSignupClicked();
+    void onReplyFinished(QNetworkReply *reply);
+    void onBrowseClicked();
+
 private:
     Ui::SignUpPage *ui;
+
+    QNetworkAccessManager *networkManager;
+
+    QString selectedRole = "student";
+    QString profileImagePath;
 };
 
-#endif // SIGNUPPAGE_H
+#endif
