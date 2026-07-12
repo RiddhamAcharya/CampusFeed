@@ -17,6 +17,8 @@ public:
 
 private:
     Ui::DashBoardPage *ui;
+
+    void loadDummyEvents();
 };
 
 #endif // DASHBOARDPAGE_H
