@@ -2,31 +2,52 @@
 #define DASHBOARDPAGE_H
 
 #include <QWidget>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
 #include <QList>
 
 #include "Event.h"
 
-class ApiService;
-
 namespace Ui {
 class DashBoardPage;
 }
+
+class NotificationPage;
+class ProfilePage;
 
 class DashBoardPage : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit DashBoardPage(QWidget *parent = nullptr);
+    explicit DashBoardPage(QWidget *parent =nullptr);
     ~DashBoardPage();
 
 private slots:
-    void displayEvents(QList<Event> events);
-    void onNetworkError(QString message);
+
+    void fetchEvents();
+    void onEventsReceived();
+    void filterEvents();
 
 private:
+
+    void parseEvents(const QByteArray &response);
+    void displayEvents(const QList<Event> &events);
+
     Ui::DashBoardPage *ui;
-    ApiService *apiService;
+
+    QNetworkAccessManager *networkManager;
+
+    QList<Event> events;
+
+    QString currentCategory;
+
+    const QString BASE_URL = "http://127.0.0.1:18080";
+
+signals:
+    void feedRequested();
+    void notificationsRequested();
+    void profileRequested();
 };
 
-#endif // DASHBOARDPAGE_H
+#endif
