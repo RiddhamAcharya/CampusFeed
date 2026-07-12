@@ -9,43 +9,82 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Find Qt modules
+# ============================================
+# Find Qt Modules
+# ============================================
+
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Network)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Network)
 
-# Project source files
+# ============================================
+# Project Sources
+# ============================================
+
 set(PROJECT_SOURCES
+
+    # Main
     main.cpp
     mainwindow.cpp
     mainwindow.h
     mainwindow.ui
 
+    # Landing Page
+    LandingPage.cpp
+    LandingPage.h
+    LandingPage.ui
+
+    # Login Page
     LoginPage.cpp
     LoginPage.h
     LoginPage.ui
 
+    # Signup Page
     SignupPage.cpp
     SignupPage.h
     SignupPage.ui
 
+    # Dashboard
     DashboardPage.cpp
     DashboardPage.h
     DashboardPage.ui
 
-    LandingPage.h
-    LandingPage.cpp
-    LandingPage.ui
+    # Event Card
+    EventCard.cpp
+    EventCard.h
+    EventCard.ui
 
+    # Notifications
+    NotificationPage.cpp
+    NotificationPage.h
+    NotificationPage.ui
+
+    NotificationCard.cpp
+    NotificationCard.h
+    NotificationCard.ui
+
+    # Profile
+    ProfilePage.cpp
+    ProfilePage.h
+    ProfilePage.ui
+
+    # Models
+    Event.h
+
+    # Resources
     resources.qrc
 )
 
-# Create executable
+# ============================================
+# Create Executable
+# ============================================
+
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
 
     qt_add_executable(CampusFeedClient
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
-        LandingPage.h LandingPage.cpp LandingPage.ui
+        ApiService.h
+        ApiService.cpp
     )
 
 else()
@@ -66,17 +105,24 @@ else()
 
 endif()
 
-# Link Qt libraries
+# ============================================
+# Link Libraries
+# ============================================
+
 target_link_libraries(CampusFeedClient PRIVATE
     Qt${QT_VERSION_MAJOR}::Widgets
     Qt${QT_VERSION_MAJOR}::Network
 )
 
-# Bundle settings
+# ============================================
+# Bundle Properties
+# ============================================
+
 if(${QT_VERSION} VERSION_LESS 6.1.0)
     set(BUNDLE_ID_OPTION
         MACOSX_BUNDLE_GUI_IDENTIFIER
-        com.example.CampusFeedClient)
+        com.example.CampusFeedClient
+    )
 endif()
 
 set_target_properties(CampusFeedClient PROPERTIES
@@ -87,6 +133,10 @@ set_target_properties(CampusFeedClient PROPERTIES
     MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
 )
 
+# ============================================
+# Installation
+# ============================================
+
 include(GNUInstallDirs)
 
 install(TARGETS CampusFeedClient
@@ -94,6 +144,10 @@ install(TARGETS CampusFeedClient
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
+
+# ============================================
+# Finalize Qt6 Executable
+# ============================================
 
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(CampusFeedClient)

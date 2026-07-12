@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>EventCard</class>
+ <widget class="QWidget" name="EventCard">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>560</width>
+    <height>430</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>0</width>
+    <height>430</height>
+   </size>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QWidget#EventCard {
+    background-color: #FFFFFF;
+    border: 1px solid #E8ECF2;
+    border-radius: 18px;
+}</string>
+  </property>
+  <layout class="QVBoxLayout" name="mainLayout">
+   <property name="spacing">
+    <number>14</number>
+   </property>
+   <property name="leftMargin">
+    <number>20</number>
+   </property>
+   <property name="topMargin">
+    <number>20</number>
+   </property>
+   <property name="rightMargin">
+    <number>20</number>
+   </property>
+   <property name="bottomMargin">
+    <number>20</number>
+   </property>
+   <item>
+    <layout class="QHBoxLayout" name="headerLayout">
+     <property name="spacing">
+      <number>12</number>
+     </property>
+     <item>
+      <widget class="QLabel" name="avatarLabel">
+       <property name="minimumSize">
+        <size>
+         <width>64</width>
+         <height>64</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>64</width>
+         <height>64</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QLabel#avatarLabel {
+    background-color: #E3E9FB;
+    color: #4C6FE0;
+    font-weight: bold;
+    font-size: 18pt;
+    border-radius: 32px;
+}</string>
+       </property>
+       <property name="text">
+        <string>CS</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" name="organizerInfoLayout">
+       <property name="spacing">
+        <number>2</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="organizerLabel">
+         <property name="styleSheet">
+          <string notr="true">font-weight: bold; font-size: 16pt; color: #1A1A1A;</string>
+         </property>
+         <property name="text">
+          <string>Computer Science Society</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="timeLabel">
+         <property name="styleSheet">
+          <string notr="true">color: #8A8F98; font-size: 11pt;</string>
+         </property>
+         <property name="text">
+          <string>2 hours ago</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <spacer name="headerSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QToolButton" name="menuButton">
+       <property name="styleSheet">
+        <string notr="true">QToolButton {
+    border: none;
+    color: #8A8F98;
+    font-size: 16pt;
+    background: transparent;
+}
+QToolButton:hover {
+    color: #4C6FE0;
+}</string>
+       </property>
+       <property name="text">
+        <string>⋮</string>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QVBoxLayout" name="descriptionLayout">
+     <property name="spacing">
+      <number>6</number>
+     </property>
+     <item>
+      <widget class="QLabel" name="titleLabel">
+       <property name="styleSheet">
+        <string notr="true">font-weight: bold; font-size: 18pt; color: #14161A;</string>
+       </property>
+       <property name="text">
+        <string>Workshop on Web Development using Qt &amp; C++</string>
+       </property>
+       <property name="wordWrap">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="descriptionLabel">
+       <property name="styleSheet">
+        <string notr="true">color: #4A4F58; font-size: 12pt;</string>
+       </property>
+       <property name="text">
+        <string>Join us this Saturday in Lab 3. Open to all students interested in C++ and Qt.</string>
+       </property>
+       <property name="wordWrap">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QLabel" name="eventImageLabel">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>220</height>
+      </size>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QLabel#eventImageLabel {
+    background-color: #EEF1F6;
+    color: #9AA1AC;
+    font-size: 12pt;
+    border-radius: 14px;
+}</string>
+     </property>
+     <property name="text">
+      <string>Event Image</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="scaledContents">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="detailsLayout">
+     <property name="spacing">
+      <number>16</number>
+     </property>
+     <item>
+      <widget class="QLabel" name="dateLabel">
+       <property name="styleSheet">
+        <string notr="true">color: #5A5F68; font-size: 10pt;</string>
+       </property>
+       <property name="text">
+        <string>📅 28 June 2026</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="eventTimeLabel">
+       <property name="styleSheet">
+        <string notr="true">color: #5A5F68; font-size: 10pt;</string>
+       </property>
+       <property name="text">
+        <string>🕒 11:00 AM</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="locationLabel">
+       <property name="styleSheet">
+        <string notr="true">color: #5A5F68; font-size: 10pt;</string>
+       </property>
+       <property name="text">
+        <string>📍 Lab 3</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="detailsSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QLabel" name="categoryLabel">
+       <property name="styleSheet">
+        <string notr="true">QLabel#categoryLabel {
+    background-color: #E3E9FB;
+    color: #4C6FE0;
+    font-size: 10pt;
+    font-weight: bold;
+    border-radius: 10px;
+    padding: 4px 12px;
+}</string>
+       </property>
+       <property name="text">
+        <string>Workshop</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="Line" name="dividerLine">
+     <property name="styleSheet">
+      <string notr="true">color: #E8ECF2;</string>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::HLine</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Sunken</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="interestedTagLabel">
+     <property name="styleSheet">
+      <string notr="true">color: #9AA1AC; font-size: 9pt; font-weight: bold;</string>
+     </property>
+     <property name="text">
+      <string>INTERESTED?</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="buttonRowLayout">
+     <property name="spacing">
+      <number>10</number>
+     </property>
+     <item>
+      <widget class="QPushButton" name="interestedButton">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>42</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QPushButton {
+    background-color: #FFFFFF;
+    color: #4C6FE0;
+    border: 1px solid #4C6FE0;
+    border-radius: 12px;
+    font-size: 11pt;
+    font-weight: bold;
+}
+QPushButton:hover {
+    background-color: #F2F5FF;
+}</string>
+       </property>
+       <property name="text">
+        <string>⭐ Interested</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="notInterestedButton">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>42</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QPushButton {
+    background-color: #FFFFFF;
+    color: #4C6FE0;
+    border: 1px solid #4C6FE0;
+    border-radius: 12px;
+    font-size: 11pt;
+    font-weight: bold;
+}
+QPushButton:hover {
+    background-color: #F2F5FF;
+}</string>
+       </property>
+       <property name="text">
+        <string>✖ Not Interested</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="goingButton">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>42</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QPushButton {
+    background-color: #FFFFFF;
+    color: #4C6FE0;
+    border: 1px solid #4C6FE0;
+    border-radius: 12px;
+    font-size: 11pt;
+    font-weight: bold;
+}
+QPushButton:hover {
+    background-color: #F2F5FF;
+}</string>
+       </property>
+       <property name="text">
+        <string>📅 Going</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

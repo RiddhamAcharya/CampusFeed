@@ -21,7 +21,12 @@ struct AuthMiddleware
             req.url == "/login" ||
             req.url == "/signup" ||
             req.url == "/health" ||
-            req.url == "/db-test")
+            req.url == "/db-test" ||
+            req.url.rfind("/events", 0) == 0 ||
+            req.url.rfind("/uploads", 0) == 0)
+        {
+            return;
+        }
         {
             return;
         }
