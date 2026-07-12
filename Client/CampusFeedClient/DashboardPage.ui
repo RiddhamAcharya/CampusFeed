@@ -14,7 +14,7 @@
    <string>DashBoardPage</string>
   </property>
   <property name="autoFillBackground">
-   <bool>true</bool>
+   <bool>false</bool>
   </property>
   <property name="styleSheet">
    <string notr="true">QWidget#DashBoardPage {
@@ -83,7 +83,7 @@
          <string>CampusFeed</string>
         </property>
         <property name="alignment">
-         <set>Qt::AlignCenter</set>
+         <set>Qt::AlignmentFlag::AlignCenter</set>
         </property>
        </widget>
       </item>
@@ -163,6 +163,12 @@ QLineEdit:focus {
       </item>
       <item>
        <widget class="QPushButton" name="filterButton">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="minimumSize">
          <size>
           <width>96</width>
@@ -175,20 +181,14 @@ QLineEdit:focus {
           <height>40</height>
          </size>
         </property>
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="cursor">
-         <cursorShape>PointingHandCursor</cursorShape>
-        </property>
         <property name="font">
          <font>
           <family>Segoe UI</family>
           <pointsize>10</pointsize>
          </font>
+        </property>
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
         </property>
         <property name="styleSheet">
          <string notr="true">QPushButton {
@@ -213,7 +213,7 @@ QPushButton:pressed {
     </widget>
    </item>
    <item>
-    <widget class="QScrollArea" name="feedScrollArea">
+    <widget class="QScrollArea" name="feedScrollLayout">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
        <horstretch>0</horstretch>
@@ -228,11 +228,11 @@ QPushButton:pressed {
     background-color: #FFFFFF;
     border: none;
 }
-QScrollArea > QWidget {
+QScrollArea &gt; QWidget {
     background-color: #FFFFFF;
     border: none;
 }
-QScrollArea > QWidget > QWidget {
+QScrollArea &gt; QWidget &gt; QWidget {
     background-color: #FFFFFF;
     border: none;
 }
@@ -258,13 +258,13 @@ QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
 }</string>
      </property>
      <property name="frameShape">
-      <enum>QFrame::NoFrame</enum>
+      <enum>QFrame::Shape::NoFrame</enum>
      </property>
      <property name="verticalScrollBarPolicy">
-      <enum>Qt::ScrollBarAsNeeded</enum>
+      <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
      </property>
      <property name="horizontalScrollBarPolicy">
-      <enum>Qt::ScrollBarAlwaysOff</enum>
+      <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
      </property>
      <property name="widgetResizable">
       <bool>true</bool>
@@ -274,12 +274,12 @@ QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>952</width>
-        <height>560</height>
+        <width>1000</width>
+        <height>528</height>
        </rect>
       </property>
       <property name="autoFillBackground">
-       <bool>true</bool>
+       <bool>false</bool>
       </property>
       <property name="styleSheet">
        <string notr="true">background-color: #FFFFFF; border: none;</string>
@@ -300,6 +300,9 @@ QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
        <property name="bottomMargin">
         <number>16</number>
        </property>
+       <item>
+        <layout class="QVBoxLayout" name="feedLayout_2"/>
+       </item>
       </layout>
      </widget>
     </widget>
@@ -355,14 +358,14 @@ QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
           <height>64</height>
          </size>
         </property>
-        <property name="cursor">
-         <cursorShape>PointingHandCursor</cursorShape>
-        </property>
         <property name="font">
          <font>
           <family>Segoe UI</family>
           <pointsize>10</pointsize>
          </font>
+        </property>
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
         </property>
         <property name="styleSheet">
          <string notr="true">QPushButton {
@@ -396,14 +399,14 @@ QPushButton:hover {
           <height>64</height>
          </size>
         </property>
-        <property name="cursor">
-         <cursorShape>PointingHandCursor</cursorShape>
-        </property>
         <property name="font">
          <font>
           <family>Segoe UI</family>
           <pointsize>10</pointsize>
          </font>
+        </property>
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
         </property>
         <property name="styleSheet">
          <string notr="true">QPushButton {
@@ -437,14 +440,14 @@ QPushButton:hover {
           <height>64</height>
          </size>
         </property>
-        <property name="cursor">
-         <cursorShape>PointingHandCursor</cursorShape>
-        </property>
         <property name="font">
          <font>
           <family>Segoe UI</family>
           <pointsize>10</pointsize>
          </font>
+        </property>
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
         </property>
         <property name="styleSheet">
          <string notr="true">QPushButton {

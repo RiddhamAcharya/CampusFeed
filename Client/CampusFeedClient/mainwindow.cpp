@@ -10,8 +10,8 @@ MainWindow::MainWindow(QWidget *parent)
         centralWidget()->layout()->setContentsMargins(0, 0, 0, 0);
         centralWidget()->layout()->setSpacing(0);
     }
-    centralWidget()->setStyleSheet("background-color: #FFFFFF;");
-    ui->stackedWidget->setStyleSheet("background-color: #FFFFFF;");
+    // centralWidget()->setStyleSheet("background-color: #FFFFFF;");
+    // ui->stackedWidget->setStyleSheet("background-color: #FFFFFF;");
 
     // ============================
     // Create Pages

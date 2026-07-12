@@ -1,10 +1,10 @@
 #include "DashboardPage.h"
 #include "ui_DashboardPage.h"
 
+#include "ApiService.h"
 #include "EventCard.h"
-#include "Event.h"
 
-#include <QList>
+#include <QMessageBox>
 
 DashBoardPage::DashBoardPage(QWidget *parent)
     : QWidget(parent)
@@ -12,7 +12,19 @@ DashBoardPage::DashBoardPage(QWidget *parent)
 {
     ui->setupUi(this);
 
-    loadDummyEvents();
+    apiService = new ApiService(this);
+
+    connect(apiService,
+            &ApiService::eventsReceived,
+            this,
+            &DashBoardPage::displayEvents);
+
+    connect(apiService,
+            &ApiService::networkError,
+            this,
+            &DashBoardPage::onNetworkError);
+
+    apiService->fetchEvents();
 }
 
 DashBoardPage::~DashBoardPage()
@@ -20,43 +32,20 @@ DashBoardPage::~DashBoardPage()
     delete ui;
 }
 
-void DashBoardPage::loadDummyEvents()
+void DashBoardPage::displayEvents(QList<Event> events)
 {
-    QList<Event> events;
+    // Remove old cards
+    QLayoutItem *item;
 
-    Event event1;
-    event1.organizer = "Computer Science Society";
-    event1.title = "Workshop on Web Development using Qt & C++";
-    event1.description = "Join us this Saturday in Lab 3. Open to all students interested in Qt and C++.";
-    event1.date = "28 June 2026";
-    event1.time = "11:00 AM";
-    event1.location = "Lab 3";
-    event1.category = "Workshop";
-    event1.timeAgo = "2 hours ago";
-    events.append(event1);
+    while ((item = ui->feedLayout->takeAt(0)) != nullptr)
+    {
+        if (item->widget())
+            delete item->widget();
 
-    Event event2;
-    event2.organizer = "IEEE Student Branch";
-    event2.title = "Hackathon 2026 Registration Open";
-    event2.description = "Register your team and compete for exciting prizes.";
-    event2.date = "5 July 2026";
-    event2.time = "9:00 AM";
-    event2.location = "Innovation Center";
-    event2.category = "Competition";
-    event2.timeAgo = "5 hours ago";
-    events.append(event2);
+        delete item;
+    }
 
-    Event event3;
-    event3.organizer = "Photography Club";
-    event3.title = "Campus Photo Walk";
-    event3.description = "Bring your camera and explore the campus together.";
-    event3.date = "10 July 2026";
-    event3.time = "3:00 PM";
-    event3.location = "Main Gate";
-    event3.category = "Activity";
-    event3.timeAgo = "1 day ago";
-    events.append(event3);
-
+    // Add new cards
     for (const Event &event : events)
     {
         EventCard *card = new EventCard(this);
@@ -66,4 +55,11 @@ void DashBoardPage::loadDummyEvents()
     }
 
     ui->feedLayout->addStretch();
+}
+
+void DashBoardPage::onNetworkError(QString message)
+{
+    QMessageBox::warning(this,
+                         "Network Error",
+                         message);
 }

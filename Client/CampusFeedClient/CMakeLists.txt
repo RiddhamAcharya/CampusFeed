@@ -83,6 +83,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(CampusFeedClient
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+        ApiService.h
+        ApiService.cpp
     )
 
 else()
