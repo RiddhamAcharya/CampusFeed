@@ -30,9 +30,11 @@ DashBoardPage::DashBoardPage(QWidget *parent)
     connect(ui->searchLineEdit,
             &QLineEdit::textChanged,
             this,
-            &DashBoardPage::filterEvents);
-
-    // -----------------------
+            [this](const QString &text)
+            {
+                currentSearch = text;
+                filterEvents();
+            });
     // Category Chips
     // -----------------------
 
@@ -42,7 +44,7 @@ DashBoardPage::DashBoardPage(QWidget *parent)
             [=]()
             {
                 currentCategory = "";
-                fetchEvents();
+                filterEvents();
             });
 
     connect(ui->chipTechnology,
@@ -51,7 +53,7 @@ DashBoardPage::DashBoardPage(QWidget *parent)
             [=]()
             {
                 currentCategory = "Technology";
-                fetchEvents();
+                filterEvents();
             });
 
     connect(ui->chipWorkshop,
@@ -60,7 +62,7 @@ DashBoardPage::DashBoardPage(QWidget *parent)
             [=]()
             {
                 currentCategory = "Workshop";
-                fetchEvents();
+                filterEvents();
             });
 
     connect(ui->chipSeminar,
@@ -69,7 +71,7 @@ DashBoardPage::DashBoardPage(QWidget *parent)
             [=]()
             {
                 currentCategory = "Seminar";
-                fetchEvents();
+                filterEvents();
             });
 
     connect(ui->chipSports,
@@ -78,7 +80,7 @@ DashBoardPage::DashBoardPage(QWidget *parent)
             [=]()
             {
                 currentCategory = "Sports";
-                fetchEvents();
+                filterEvents();
             });
 
     connect(ui->chipCultural,
@@ -87,7 +89,7 @@ DashBoardPage::DashBoardPage(QWidget *parent)
             [=]()
             {
                 currentCategory = "Cultural";
-                fetchEvents();
+                filterEvents();
             });
 
     connect(ui->chipOther,
@@ -96,7 +98,7 @@ DashBoardPage::DashBoardPage(QWidget *parent)
             [=]()
             {
                 currentCategory = "Other";
-                fetchEvents();
+                filterEvents();
             });
 
     // -----------------------
@@ -136,11 +138,6 @@ DashBoardPage::~DashBoardPage()
 void DashBoardPage::fetchEvents()
 {
     QString url = BASE_URL + "/events";
-
-    if (!currentCategory.isEmpty())
-    {
-        url += "?category=" + currentCategory;
-    }
 
     QNetworkRequest request{QUrl(url)};
 
@@ -324,7 +321,7 @@ void DashBoardPage::parseEvents(const QByteArray &response)
 
     qDebug() << "================================";
 
-    displayEvents(events);
+    filterEvents();
 }
 
 void DashBoardPage::displayEvents(const QList<Event> &events)
@@ -454,23 +451,32 @@ void DashBoardPage::displayEvents(const QList<Event> &events)
 
 void DashBoardPage::filterEvents()
 {
-    QString search =
-        ui->searchLineEdit->text().trimmed().toLower();
-
-    if(search.isEmpty())
-    {
-        displayEvents(events);
-        return;
-    }
-
     QList<Event> filteredEvents;
+
+    QString search = currentSearch.trimmed().toLower();
 
     for(const Event &event : events)
     {
-        if(event.title.toLower().contains(search) ||
-            event.description.toLower().contains(search) ||
-            event.organizer.toLower().contains(search) ||
-            event.location.toLower().contains(search))
+        bool matchesSearch = true;
+        bool matchesCategory = true;
+
+        if(!search.isEmpty())
+        {
+            matchesSearch =
+                event.title.toLower().contains(search) ||
+                event.description.toLower().contains(search) ||
+                event.organizer.toLower().contains(search) ||
+                event.location.toLower().contains(search);
+        }
+
+        if(currentCategory != "All")
+        {
+            matchesCategory =
+                event.category.compare(currentCategory,
+                                       Qt::CaseInsensitive) == 0;
+        }
+
+        if(matchesSearch && matchesCategory)
         {
             filteredEvents.append(event);
         }
