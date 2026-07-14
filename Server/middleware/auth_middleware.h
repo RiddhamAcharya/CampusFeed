@@ -22,11 +22,8 @@ struct AuthMiddleware
             req.url == "/signup" ||
             req.url == "/health" ||
             req.url == "/db-test" ||
-            req.url.rfind("/events", 0) == 0 ||
+            (req.url == "/events" && req.method == crow::HTTPMethod::GET) ||
             req.url.rfind("/uploads", 0) == 0)
-        {
-            return;
-        }
         {
             return;
         }

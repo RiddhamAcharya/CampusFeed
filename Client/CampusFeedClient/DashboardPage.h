@@ -34,13 +34,15 @@ private:
     void parseEvents(const QByteArray &response);
     void displayEvents(const QList<Event> &events);
 
+
     Ui::DashBoardPage *ui;
 
     QNetworkAccessManager *networkManager;
 
     QList<Event> events;
 
-    QString currentCategory;
+    QString currentCategory = "All";
+    QString currentSearch = "";
 
     const QString BASE_URL = "http://127.0.0.1:18080";
 

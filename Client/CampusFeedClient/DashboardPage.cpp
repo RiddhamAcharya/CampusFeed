@@ -1,5 +1,6 @@
 #include "DashboardPage.h"
 #include "ui_DashboardPage.h"
+#include "EventCard.h"
 
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -11,6 +12,9 @@
 #include <QDateTime>
 #include <QMessageBox>
 #include <QDebug>
+
+#include <algorithm>
+#include <QDateTime>
 
 DashBoardPage::DashBoardPage(QWidget *parent)
     : QWidget(parent),
@@ -30,9 +34,11 @@ DashBoardPage::DashBoardPage(QWidget *parent)
     connect(ui->searchLineEdit,
             &QLineEdit::textChanged,
             this,
-            &DashBoardPage::filterEvents);
-
-    // -----------------------
+            [this](const QString &text)
+            {
+                currentSearch = text;
+                filterEvents();
+            });
     // Category Chips
     // -----------------------
 
@@ -42,7 +48,7 @@ DashBoardPage::DashBoardPage(QWidget *parent)
             [=]()
             {
                 currentCategory = "";
-                fetchEvents();
+                filterEvents();
             });
 
     connect(ui->chipTechnology,
@@ -51,7 +57,7 @@ DashBoardPage::DashBoardPage(QWidget *parent)
             [=]()
             {
                 currentCategory = "Technology";
-                fetchEvents();
+                filterEvents();
             });
 
     connect(ui->chipWorkshop,
@@ -60,7 +66,7 @@ DashBoardPage::DashBoardPage(QWidget *parent)
             [=]()
             {
                 currentCategory = "Workshop";
-                fetchEvents();
+                filterEvents();
             });
 
     connect(ui->chipSeminar,
@@ -69,7 +75,7 @@ DashBoardPage::DashBoardPage(QWidget *parent)
             [=]()
             {
                 currentCategory = "Seminar";
-                fetchEvents();
+                filterEvents();
             });
 
     connect(ui->chipSports,
@@ -78,7 +84,7 @@ DashBoardPage::DashBoardPage(QWidget *parent)
             [=]()
             {
                 currentCategory = "Sports";
-                fetchEvents();
+                filterEvents();
             });
 
     connect(ui->chipCultural,
@@ -87,7 +93,7 @@ DashBoardPage::DashBoardPage(QWidget *parent)
             [=]()
             {
                 currentCategory = "Cultural";
-                fetchEvents();
+                filterEvents();
             });
 
     connect(ui->chipOther,
@@ -96,7 +102,7 @@ DashBoardPage::DashBoardPage(QWidget *parent)
             [=]()
             {
                 currentCategory = "Other";
-                fetchEvents();
+                filterEvents();
             });
 
     // -----------------------
@@ -136,11 +142,6 @@ DashBoardPage::~DashBoardPage()
 void DashBoardPage::fetchEvents()
 {
     QString url = BASE_URL + "/events";
-
-    if (!currentCategory.isEmpty())
-    {
-        url += "?category=" + currentCategory;
-    }
 
     QNetworkRequest request{QUrl(url)};
 
@@ -202,7 +203,7 @@ void DashBoardPage::parseEvents(const QByteArray &response)
     QJsonDocument document =
         QJsonDocument::fromJson(response, &parseError);
 
-    if(parseError.error != QJsonParseError::NoError)
+    if (parseError.error != QJsonParseError::NoError)
     {
         QMessageBox::warning(this,
                              "JSON Error",
@@ -210,7 +211,7 @@ void DashBoardPage::parseEvents(const QByteArray &response)
         return;
     }
 
-    if(!document.isArray())
+    if (!document.isArray())
     {
         QMessageBox::warning(this,
                              "Backend Error",
@@ -220,74 +221,59 @@ void DashBoardPage::parseEvents(const QByteArray &response)
 
     QJsonArray array = document.array();
 
-    for(const QJsonValue &value : array)
+    for (const QJsonValue &value : array)
     {
-        if(!value.isObject())
+        if (!value.isObject())
             continue;
 
         QJsonObject obj = value.toObject();
 
         Event event;
 
-        //----------------------------------
-        // Basic Information
-        //----------------------------------
+        //-----------------------------
+        // Basic Info
+        //-----------------------------
 
         event.id = obj["id"].toInt();
+        event.title = obj["title"].toString();
+        event.description = obj["description"].toString();
+        event.category = obj["category"].toString();
+        event.location = obj["location"].toString();
+        event.registrationLink = obj["registration_link"].toString();
 
-        event.title =
-            obj["title"].toString();
-
-        event.description =
-            obj["description"].toString();
-
-        event.category =
-            obj["category"].toString();
-
-        event.location =
-            obj["location"].toString();
-
-        event.registrationLink =
-            obj["registration_link"].toString();
-
-        //----------------------------------
+        //-----------------------------
         // Organizer
-        //----------------------------------
+        //-----------------------------
 
-        if(obj.contains("organizer"))
-            event.organizer =
-                obj["organizer"].toString();
-        else
-            event.organizer =
-                "Campus Organizer";
+        event.organizer =
+            obj.contains("organizer")
+                ? obj["organizer"].toString()
+                : "Campus Organizer";
 
-        //----------------------------------
+        //-----------------------------
         // Image
-        //----------------------------------
+        //-----------------------------
 
-        if(obj.contains("image"))
-        {
-            event.imagePath =
-                obj["image"].toString();
-        }
-        else
-        {
-            event.imagePath = "";
-        }
+        event.imagePath =
+            obj.contains("image")
+                ? obj["image"].toString()
+                : "";
 
-        //----------------------------------
+        //-----------------------------
         // Date & Time
-        //----------------------------------
+        //-----------------------------
 
         QString backendDate =
             obj["event_date"].toString();
+
+        event.eventDateTime = backendDate;
 
         QDateTime dateTime =
             QDateTime::fromString(
                 backendDate,
                 "yyyy-MM-dd HH:mm:ss");
 
-        if(dateTime.isValid())
+        if (dateTime.isValid())
         {
             event.date =
                 dateTime.date().toString("dd MMM yyyy");
@@ -301,176 +287,119 @@ void DashBoardPage::parseEvents(const QByteArray &response)
             event.time = "";
         }
 
-        //----------------------------------
+        //-----------------------------
         // Time Ago
-        //----------------------------------
+        //-----------------------------
 
         event.timeAgo = "Recently";
-
-        //----------------------------------
-        // Save
-        //----------------------------------
 
         events.append(event);
     }
 
-    qDebug() << "================================";
-    qDebug() << "Events Parsed :" << events.size();
+    //-----------------------------
+    // Sort Newest First
+    //-----------------------------
 
-    for(const Event &event : events)
+    std::sort(events.begin(), events.end(),
+              [](const Event &a, const Event &b)
+              {
+                  return QDateTime::fromString(
+                             a.eventDateTime,
+                             "yyyy-MM-dd HH:mm:ss")
+                         >
+                         QDateTime::fromString(
+                             b.eventDateTime,
+                             "yyyy-MM-dd HH:mm:ss");
+              });
+
+    qDebug() << "================================";
+    qDebug() << "Events Parsed:" << events.size();
+
+    for (const Event &event : events)
     {
-        qDebug() << event.title;
+        qDebug() << event.title << event.eventDateTime;
     }
 
     qDebug() << "================================";
 
-    displayEvents(events);
+    filterEvents();
 }
 
 void DashBoardPage::displayEvents(const QList<Event> &events)
 {
-    // Hide both cards initially
-    ui->cardTechXHackathon->hide();
-    ui->cardModernCpp->hide();
+    // Remove previous cards
+    QLayoutItem *child;
 
-    //--------------------------------------
-    // Event 1
-    //--------------------------------------
-
-    if(events.size() >= 1)
+    while ((child = ui->feedLayout->takeAt(0)) != nullptr)
     {
-        const Event &event = events.at(0);
-
-        ui->cardTechXHackathon->show();
-
-        ui->organizerNameTechX->setText(event.organizer);
-        ui->organizerTimeTechX->setText(event.timeAgo);
-
-        ui->titleTechX->setText(event.title);
-        ui->descTechX->setText(event.description);
-
-        ui->dateTechX->setText("📅 " + event.date);
-        ui->locationTechX->setText("📍 " + event.location);
-
-        ui->badgeTechX->setText(event.category);
-
-        // Temporary banner
-        if(event.imagePath.isEmpty())
+        if (child->widget())
         {
-            ui->bannerTechX->setText(event.title);
-        }
-        else
-        {
-            // Image loading comes later
-            ui->bannerTechX->setText(event.title);
+            child->widget()->deleteLater();
         }
 
-        // Avatar initials
-        QString initials = "CF";
-
-        QStringList words =
-            event.organizer.split(" ",
-                                  Qt::SkipEmptyParts);
-
-        if(words.size() >= 2)
-        {
-            initials =
-                words[0].left(1).toUpper() +
-                words[1].left(1).toUpper();
-        }
-        else if(words.size() == 1)
-        {
-            initials =
-                words[0].left(2).toUpper();
-        }
-
-        ui->avatarTechX->setText(initials);
+        delete child;
     }
 
-    //--------------------------------------
-    // Event 2
-    //--------------------------------------
-
-    if(events.size() >= 2)
+    // No events
+    if (events.isEmpty())
     {
-        const Event &event = events.at(1);
+        QLabel *label = new QLabel("No events available.");
 
-        ui->cardModernCpp->show();
+        label->setAlignment(Qt::AlignCenter);
 
-        ui->organizerNameCpp->setText(event.organizer);
-        ui->organizerTimeCpp->setText(event.timeAgo);
+        label->setStyleSheet(
+            "font-size:18px;"
+            "color:gray;"
+            "padding:30px;"
+            );
 
-        ui->titleCpp->setText(event.title);
-        ui->descCpp->setText(event.description);
+        ui->feedLayout->addWidget(label);
 
-        ui->dateCpp->setText("📅 " + event.date);
-        ui->timeCpp->setText("🕒 " + event.time);
-        ui->locationCpp->setText("📍 " + event.location);
-
-        ui->badgeCpp->setText(event.category);
-
-        if(event.imagePath.isEmpty())
-        {
-            ui->bannerCpp->setText(event.title);
-        }
-        else
-        {
-            ui->bannerCpp->setText(event.title);
-        }
-
-        QString initials = "CF";
-
-        QStringList words =
-            event.organizer.split(" ",
-                                  Qt::SkipEmptyParts);
-
-        if(words.size() >= 2)
-        {
-            initials =
-                words[0].left(1).toUpper() +
-                words[1].left(1).toUpper();
-        }
-        else if(words.size() == 1)
-        {
-            initials =
-                words[0].left(2).toUpper();
-        }
-
-        ui->avatarCpp->setText(initials);
+        return;
     }
 
-    //--------------------------------------
-    // No Events
-    //--------------------------------------
-
-    if(events.isEmpty())
+    // Create one EventCard per event
+    for (const Event &event : events)
     {
-        QMessageBox::information(
-            this,
-            "CampusFeed",
-            "No events found.");
+        EventCard *card = new EventCard();
+
+        card->setEvent(event);
+
+        ui->feedLayout->addWidget(card);
     }
+
+    // Push cards to top
+    ui->feedLayout->addStretch();
 }
 
 void DashBoardPage::filterEvents()
 {
-    QString search =
-        ui->searchLineEdit->text().trimmed().toLower();
-
-    if(search.isEmpty())
-    {
-        displayEvents(events);
-        return;
-    }
-
     QList<Event> filteredEvents;
+
+    QString search = currentSearch.trimmed().toLower();
 
     for(const Event &event : events)
     {
-        if(event.title.toLower().contains(search) ||
-            event.description.toLower().contains(search) ||
-            event.organizer.toLower().contains(search) ||
-            event.location.toLower().contains(search))
+        bool matchesSearch = true;
+        bool matchesCategory = true;
+
+        if(!search.isEmpty())
+        {
+            matchesSearch =
+                event.title.toLower().contains(search) ||
+                event.description.toLower().contains(search) ||
+                event.organizer.toLower().contains(search) ||
+                event.location.toLower().contains(search);
+        }
+
+        if(currentCategory != "All")
+        {
+            matchesCategory =
+                event.category.compare(currentCategory,
+                                       Qt::CaseInsensitive) == 0;
+        }
+
+        if(matchesSearch && matchesCategory)
         {
             filteredEvents.append(event);
         }

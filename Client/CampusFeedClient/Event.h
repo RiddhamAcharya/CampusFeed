@@ -22,6 +22,8 @@ struct Event
     QString registrationLink;
 
     QString timeAgo;
+
+    QString eventDateTime;
 };
 
 #endif // EVENT_H
