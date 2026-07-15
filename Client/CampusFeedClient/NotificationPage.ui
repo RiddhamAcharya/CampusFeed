@@ -1,18 +1,347 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>NotificationPage</class>
- <widget class="QWidget" name="NotificationPage">
+ <class>NotificationsPage</class>
+ <widget class="QWidget" name="NotificationsPage">
   <property name="geometry">
-   <rect>
-    <x>0</x>
-    <y>0</y>
-    <width>400</width>
-    <height>300</height>
-   </rect>
+   <rect><x>0</x><y>0</y><width>1024</width><height>720</height></rect>
+  </property>
+  <property name="minimumSize">
+   <size><width>800</width><height>600</height></size>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>CampusFeed - Notifications</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: #FFFFFF;</string>
+  </property>
+
+  <layout class="QVBoxLayout" name="rootLayout">
+   <property name="spacing"><number>0</number></property>
+   <property name="leftMargin"><number>0</number></property>
+   <property name="topMargin"><number>0</number></property>
+   <property name="rightMargin"><number>0</number></property>
+   <property name="bottomMargin"><number>0</number></property>
+
+   <!-- ===================== HEADER ===================== -->
+   <item>
+    <widget class="QFrame" name="headerFrame">
+     <property name="minimumSize"><size><width>0</width><height>72</height></size></property>
+     <property name="maximumSize"><size><width>16777215</width><height>72</height></size></property>
+     <property name="styleSheet">
+      <string notr="true">border-bottom: 1px solid #E7E9F3;</string>
+     </property>
+     <layout class="QVBoxLayout" name="headerLayout">
+      <item>
+       <widget class="QLabel" name="titleLabel">
+        <property name="text"><string>Notifications</string></property>
+        <property name="alignment"><set>Qt::AlignCenter</set></property>
+        <property name="styleSheet">
+         <string notr="true">font-size: 22px; font-weight: 700; color: #1A1A2E;</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+
+   <!-- ===================== SCROLL AREA (notification list) ===================== -->
+   <item>
+    <widget class="QScrollArea" name="scrollArea">
+     <property name="frameShape"><enum>QFrame::NoFrame</enum></property>
+     <property name="widgetResizable"><bool>true</bool></property>
+     <property name="styleSheet">
+      <string notr="true">QScrollArea { border: none; background: transparent; }</string>
+     </property>
+     <widget class="QWidget" name="scrollAreaWidgetContents">
+      <property name="geometry"><rect><x>0</x><y>0</y><width>984</width><height>640</height></rect></property>
+      <property name="styleSheet"><string notr="true">background-color: #FFFFFF;</string></property>
+
+      <layout class="QVBoxLayout" name="cardsLayout">
+       <property name="spacing"><number>14</number></property>
+       <property name="leftMargin"><number>24</number></property>
+       <property name="topMargin"><number>20</number></property>
+       <property name="rightMargin"><number>24</number></property>
+       <property name="bottomMargin"><number>20</number></property>
+
+       <!-- ============ CARD 1 : New Event Nearby ============ -->
+       <item>
+        <widget class="QFrame" name="cardEventNearby">
+         <property name="minimumSize"><size><width>0</width><height>78</height></size></property>
+         <property name="styleSheet">
+          <string notr="true">QFrame#cardEventNearby { background-color: #FFFFFF; border: 1px solid #E7E9F3; border-radius: 12px; }</string>
+         </property>
+         <layout class="QHBoxLayout" name="cardEventNearbyLayout">
+          <property name="spacing"><number>14</number></property>
+          <property name="leftMargin"><number>16</number></property>
+          <property name="topMargin"><number>14</number></property>
+          <property name="rightMargin"><number>16</number></property>
+          <property name="bottomMargin"><number>14</number></property>
+
+          <item>
+           <widget class="QLabel" name="iconEventNearby">
+            <property name="minimumSize"><size><width>44</width><height>44</height></size></property>
+            <property name="maximumSize"><size><width>44</width><height>44</height></size></property>
+            <property name="text"><string>📅</string></property>
+            <property name="alignment"><set>Qt::AlignCenter</set></property>
+            <property name="styleSheet">
+             <string notr="true">background-color: #EEE9FE; color: #7C5CFC; border-radius: 12px; font-size: 18px;</string>
+            </property>
+           </widget>
+          </item>
+
+          <item>
+           <layout class="QVBoxLayout" name="textColEventNearby">
+            <property name="spacing"><number>4</number></property>
+            <item>
+             <widget class="QLabel" name="titleEventNearby">
+              <property name="text"><string>New Event Nearby</string></property>
+              <property name="styleSheet"><string notr="true">font-size: 14px; font-weight: 600; color: #1A1A2E;</string></property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="descEventNearby">
+              <property name="text"><string>"TechX Hackathon 2025" is happening near your campus.</string></property>
+              <property name="wordWrap"><bool>true</bool></property>
+              <property name="styleSheet"><string notr="true">font-size: 13px; color: #7A7F9A;</string></property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+
+          <item>
+           <layout class="QVBoxLayout" name="rightColEventNearby">
+            <property name="spacing"><number>8</number></property>
+            <item>
+             <widget class="QLabel" name="timeEventNearby">
+              <property name="text"><string>2m ago</string></property>
+              <property name="alignment"><set>Qt::AlignRight|Qt::AlignVCenter</set></property>
+              <property name="styleSheet"><string notr="true">font-size: 12px; color: #7A7F9A;</string></property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="dotEventNearby">
+              <property name="minimumSize"><size><width>8</width><height>8</height></size></property>
+              <property name="maximumSize"><size><width>8</width><height>8</height></size></property>
+              <property name="styleSheet"><string notr="true">background-color: #4A6CF7; border-radius: 4px;</string></property>
+              <property name="alignment"><set>Qt::AlignRight|Qt::AlignVCenter</set></property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+
+         </layout>
+        </widget>
+       </item>
+
+       <!-- ============ CARD 2 : Event Reminder ============ -->
+       <item>
+        <widget class="QFrame" name="cardEventReminder">
+         <property name="minimumSize"><size><width>0</width><height>78</height></size></property>
+         <property name="styleSheet">
+          <string notr="true">QFrame#cardEventReminder { background-color: #FFFFFF; border: 1px solid #E7E9F3; border-radius: 12px; }</string>
+         </property>
+         <layout class="QHBoxLayout" name="cardEventReminderLayout">
+          <property name="spacing"><number>14</number></property>
+          <property name="leftMargin"><number>16</number></property>
+          <property name="topMargin"><number>14</number></property>
+          <property name="rightMargin"><number>16</number></property>
+          <property name="bottomMargin"><number>14</number></property>
+
+          <item>
+           <widget class="QLabel" name="iconEventReminder">
+            <property name="minimumSize"><size><width>44</width><height>44</height></size></property>
+            <property name="maximumSize"><size><width>44</width><height>44</height></size></property>
+            <property name="text"><string>🔔</string></property>
+            <property name="alignment"><set>Qt::AlignCenter</set></property>
+            <property name="styleSheet">
+             <string notr="true">background-color: #EEF1FE; color: #4A6CF7; border-radius: 12px; font-size: 18px;</string>
+            </property>
+           </widget>
+          </item>
+
+          <item>
+           <layout class="QVBoxLayout" name="textColEventReminder">
+            <property name="spacing"><number>4</number></property>
+            <item>
+             <widget class="QLabel" name="titleEventReminder">
+              <property name="text"><string>Event Reminder</string></property>
+              <property name="styleSheet"><string notr="true">font-size: 14px; font-weight: 600; color: #1A1A2E;</string></property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="descEventReminder">
+              <property name="text"><string>"Web Development Bootcamp" is starting tomorrow at 10:00 AM.</string></property>
+              <property name="wordWrap"><bool>true</bool></property>
+              <property name="styleSheet"><string notr="true">font-size: 13px; color: #7A7F9A;</string></property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+
+          <item>
+           <layout class="QVBoxLayout" name="rightColEventReminder">
+            <property name="spacing"><number>8</number></property>
+            <item>
+             <widget class="QLabel" name="timeEventReminder">
+              <property name="text"><string>1h ago</string></property>
+              <property name="alignment"><set>Qt::AlignRight|Qt::AlignVCenter</set></property>
+              <property name="styleSheet"><string notr="true">font-size: 12px; color: #7A7F9A;</string></property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="dotEventReminder">
+              <property name="minimumSize"><size><width>8</width><height>8</height></size></property>
+              <property name="maximumSize"><size><width>8</width><height>8</height></size></property>
+              <property name="styleSheet"><string notr="true">background-color: #4A6CF7; border-radius: 4px;</string></property>
+              <property name="alignment"><set>Qt::AlignRight|Qt::AlignVCenter</set></property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+
+         </layout>
+        </widget>
+       </item>
+
+       <!-- ============ CARD 3 : New Follower (read / no unread dot) ============ -->
+       <item>
+        <widget class="QFrame" name="cardNewFollower">
+         <property name="minimumSize"><size><width>0</width><height>78</height></size></property>
+         <property name="styleSheet">
+          <string notr="true">QFrame#cardNewFollower { background-color: #FFFFFF; border: 1px solid #E7E9F3; border-radius: 12px; }</string>
+         </property>
+         <layout class="QHBoxLayout" name="cardNewFollowerLayout">
+          <property name="spacing"><number>14</number></property>
+          <property name="leftMargin"><number>16</number></property>
+          <property name="topMargin"><number>14</number></property>
+          <property name="rightMargin"><number>16</number></property>
+          <property name="bottomMargin"><number>14</number></property>
+
+          <item>
+           <widget class="QLabel" name="iconNewFollower">
+            <property name="minimumSize"><size><width>44</width><height>44</height></size></property>
+            <property name="maximumSize"><size><width>44</width><height>44</height></size></property>
+            <property name="text"><string>👤</string></property>
+            <property name="alignment"><set>Qt::AlignCenter</set></property>
+            <property name="styleSheet">
+             <string notr="true">background-color: #FDEEE0; color: #F5A623; border-radius: 12px; font-size: 18px;</string>
+            </property>
+           </widget>
+          </item>
+
+          <item>
+           <layout class="QVBoxLayout" name="textColNewFollower">
+            <property name="spacing"><number>4</number></property>
+            <item>
+             <widget class="QLabel" name="titleNewFollower">
+              <property name="text"><string>New Follower</string></property>
+              <property name="styleSheet"><string notr="true">font-size: 14px; font-weight: 600; color: #1A1A2E;</string></property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="descNewFollower">
+              <property name="text"><string>Riya Sharma started following you.</string></property>
+              <property name="wordWrap"><bool>true</bool></property>
+              <property name="styleSheet"><string notr="true">font-size: 13px; color: #7A7F9A;</string></property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+
+          <item>
+           <layout class="QVBoxLayout" name="rightColNewFollower">
+            <property name="spacing"><number>8</number></property>
+            <item>
+             <widget class="QLabel" name="timeNewFollower">
+              <property name="text"><string>3h ago</string></property>
+              <property name="alignment"><set>Qt::AlignRight|Qt::AlignVCenter</set></property>
+              <property name="styleSheet"><string notr="true">font-size: 12px; color: #7A7F9A;</string></property>
+             </widget>
+            </item>
+            <!-- no unread dot here: this one is already read -->
+           </layout>
+          </item>
+
+         </layout>
+        </widget>
+       </item>
+
+       <!-- ============ Stretch: pushes cards to the top when list is short ============ -->
+       <item>
+        <spacer name="cardsBottomSpacer">
+         <property name="orientation"><enum>Qt::Vertical</enum></property>
+         <property name="sizeHint"><size><width>20</width><height>40</height></size></property>
+        </spacer>
+       </item>
+
+      </layout>
+     </widget>
+    </widget>
+   </item>
+
+   <!-- ===================== BOTTOM NAVIGATION ===================== -->
+   <item>
+    <widget class="QFrame" name="bottomNavFrame">
+     <property name="minimumSize"><size><width>0</width><height>64</height></size></property>
+     <property name="maximumSize"><size><width>16777215</width><height>64</height></size></property>
+     <property name="styleSheet">
+      <string notr="true">background-color: #FFFFFF; border-top: 1px solid #E7E9F3;</string>
+     </property>
+     <layout class="QHBoxLayout" name="bottomNavLayout">
+      <property name="spacing"><number>0</number></property>
+      <property name="leftMargin"><number>24</number></property>
+      <property name="topMargin"><number>0</number></property>
+      <property name="rightMargin"><number>24</number></property>
+      <property name="bottomMargin"><number>0</number></property>
+
+      <item>
+       <widget class="QPushButton" name="navFeedButton">
+        <property name="minimumSize"><size><width>0</width><height>56</height></size></property>
+        <property name="cursor"><cursorShape>PointingHandCursor</cursorShape></property>
+        <property name="text"><string>🏠
+Feed</string></property>
+        <property name="flat"><bool>true</bool></property>
+        <property name="checkable"><bool>true</bool></property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton { background: transparent; border: none; font-size: 12px; color: #7A7F9A; }</string>
+        </property>
+       </widget>
+      </item>
+
+      <item>
+       <widget class="QPushButton" name="navNotificationsButton">
+        <property name="minimumSize"><size><width>0</width><height>56</height></size></property>
+        <property name="cursor"><cursorShape>PointingHandCursor</cursorShape></property>
+        <property name="text"><string>🔔
+Notifications</string></property>
+        <property name="flat"><bool>true</bool></property>
+        <property name="checkable"><bool>true</bool></property>
+        <property name="checked"><bool>true</bool></property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton { background: transparent; border: none; font-size: 12px; font-weight: 600; color: #4A6CF7; }</string>
+        </property>
+       </widget>
+      </item>
+
+      <item>
+       <widget class="QPushButton" name="navProfileButton">
+        <property name="minimumSize"><size><width>0</width><height>56</height></size></property>
+        <property name="cursor"><cursorShape>PointingHandCursor</cursorShape></property>
+        <property name="text"><string>👤
+Profile</string></property>
+        <property name="flat"><bool>true</bool></property>
+        <property name="checkable"><bool>true</bool></property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton { background: transparent; border: none; font-size: 12px; color: #7A7F9A; }</string>
+        </property>
+       </widget>
+      </item>
+
+     </layout>
+    </widget>
+   </item>
+
+  </layout>
  </widget>
  <resources/>
  <connections/>
