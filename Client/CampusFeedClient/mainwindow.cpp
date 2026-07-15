@@ -22,6 +22,55 @@ MainWindow::MainWindow(QWidget *parent)
     signupPage = new SignUpPage(this);
     dashboardPage = new DashBoardPage(this);
 
+    notificationsPage = new NotificationsPage(this);
+    profilePage = new ProfilePage(this);
+
+    connect(dashboardPage,
+            &DashBoardPage::notificationsRequested,
+            this,
+            [=]()
+            {
+                ui->stackedWidget->setCurrentWidget(notificationsPage);
+            });
+
+    connect(dashboardPage,
+            &DashBoardPage::profileRequested,
+            this,
+            [=]()
+            {
+                ui->stackedWidget->setCurrentWidget(profilePage);
+            });
+    connect(notificationsPage,
+            &NotificationsPage::feedRequested,
+            this,
+            [=]()
+            {
+                ui->stackedWidget->setCurrentWidget(dashboardPage);
+            });
+
+    connect(notificationsPage,
+            &NotificationsPage::profileRequested,
+            this,
+            [=]()
+            {
+                ui->stackedWidget->setCurrentWidget(profilePage);
+            });
+    connect(profilePage,
+            &ProfilePage::feedRequested,
+            this,
+            [=]()
+            {
+                ui->stackedWidget->setCurrentWidget(dashboardPage);
+            });
+
+    connect(profilePage,
+            &ProfilePage::notificationsRequested,
+            this,
+            [=]()
+            {
+                ui->stackedWidget->setCurrentWidget(notificationsPage);
+            });
+
     // ============================
     // Add to Stacked Widget
     // ============================
@@ -30,6 +79,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->stackedWidget->addWidget(loginPage);
     ui->stackedWidget->addWidget(signupPage);
     ui->stackedWidget->addWidget(dashboardPage);
+    ui->stackedWidget->addWidget(notificationsPage);
+    ui->stackedWidget->addWidget(profilePage);
 
     // ============================
     // Landing Page Navigation
