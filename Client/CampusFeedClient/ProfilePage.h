@@ -2,6 +2,7 @@
 #define PROFILEPAGE_H
 
 #include <QWidget>
+#include <QPushButton>
 
 namespace Ui {
 class ProfilePage;
@@ -15,8 +16,16 @@ public:
     explicit ProfilePage(QWidget *parent = nullptr);
     ~ProfilePage();
 
+signals:
+    void feedRequested();
+    void notificationsRequested();
+
+private slots:
+    void on_navFeedButton_clicked();
+    void on_navNotificationsButton_clicked();
+
 private:
     Ui::ProfilePage *ui;
 };
 
-#endif // PROFILEPAGE_H
+#endif

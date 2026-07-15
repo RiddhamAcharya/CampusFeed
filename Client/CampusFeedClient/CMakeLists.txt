@@ -54,9 +54,9 @@ set(PROJECT_SOURCES
     EventCard.ui
 
     # Notifications
-    NotificationPage.cpp
-    NotificationPage.h
-    NotificationPage.ui
+    NotificationsPage.cpp
+    NotificationsPage.h
+    NotificationsPage.ui
 
     NotificationCard.cpp
     NotificationCard.h

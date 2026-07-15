@@ -120,18 +120,13 @@ DashBoardPage::DashBoardPage(QWidget *parent)
     connect(ui->navNotificationsButton,
             &QPushButton::clicked,
             this,
-            [=]()
-            {
-                emit notificationsRequested();
-            });
+            &DashBoardPage::notificationsRequested);
 
     connect(ui->navProfileButton,
             &QPushButton::clicked,
             this,
-            [=]()
-            {
-                emit profileRequested();
-            });
+            &DashBoardPage::profileRequested);
+
 }
 
 DashBoardPage::~DashBoardPage()
@@ -376,33 +371,27 @@ void DashBoardPage::filterEvents()
 {
     QList<Event> filteredEvents;
 
-    QString search = currentSearch.trimmed().toLower();
+    QString searchText =
+        ui->searchLineEdit->text().trimmed();
 
-    for(const Event &event : events)
+    for (const Event &event : events)
     {
-        bool matchesSearch = true;
-        bool matchesCategory = true;
+        // ---------- Category ----------
+        bool categoryMatch =
+            currentCategory.isEmpty() ||
+            currentCategory == "All" ||
+            event.category.compare(currentCategory,
+                                   Qt::CaseInsensitive) == 0;
 
-        if(!search.isEmpty())
-        {
-            matchesSearch =
-                event.title.toLower().contains(search) ||
-                event.description.toLower().contains(search) ||
-                event.organizer.toLower().contains(search) ||
-                event.location.toLower().contains(search);
-        }
+        // ---------- Search ----------
+        bool searchMatch =
+            searchText.isEmpty() ||
+            event.title.contains(searchText, Qt::CaseInsensitive) ||
+            event.description.contains(searchText, Qt::CaseInsensitive) ||
+            event.location.contains(searchText, Qt::CaseInsensitive);
 
-        if(currentCategory != "All")
-        {
-            matchesCategory =
-                event.category.compare(currentCategory,
-                                       Qt::CaseInsensitive) == 0;
-        }
-
-        if(matchesSearch && matchesCategory)
-        {
+        if(categoryMatch && searchMatch)
             filteredEvents.append(event);
-        }
     }
 
     displayEvents(filteredEvents);

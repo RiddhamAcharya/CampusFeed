@@ -3,10 +3,12 @@
 
 #include <QMainWindow>
 
+#include "LandingPage.h"
 #include "LoginPage.h"
 #include "SignupPage.h"
 #include "DashboardPage.h"
-#include "LandingPage.h"
+#include "NotificationsPage.h"
+#include "ProfilePage.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -19,16 +21,19 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
+    explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
 private:
     Ui::MainWindow *ui;
 
+    LandingPage *landingPage;
     LoginPage *loginPage;
     SignUpPage *signupPage;
     DashBoardPage *dashboardPage;
-    LandingPage *landingPage;
+
+    NotificationsPage *notificationsPage;
+    ProfilePage *profilePage;
 };
 
 #endif // MAINWINDOW_H
