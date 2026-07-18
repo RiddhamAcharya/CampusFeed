@@ -23,9 +23,12 @@ public:
     explicit DashBoardPage(QWidget *parent =nullptr);
     ~DashBoardPage();
 
-private slots:
+public slots:
 
     void fetchEvents();
+
+private slots:
+
     void onEventsReceived();
     void filterEvents();
 
@@ -50,6 +53,7 @@ signals:
     void feedRequested();
     void notificationsRequested();
     void profileRequested();
+    void createEventRequested();
 };
 
 #endif

@@ -16,6 +16,10 @@ class LoginPage : public QWidget
 public:
     explicit LoginPage(QWidget *parent = nullptr);
     ~LoginPage();
+    static QString token;
+    static QString role;
+    static int userId;
+    static QString fullName;
 
 signals:
     void loginSuccessful();
