@@ -9,6 +9,7 @@
 #include "DashboardPage.h"
 #include "NotificationsPage.h"
 #include "ProfilePage.h"
+#include "CreateEventPage.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -34,6 +35,7 @@ private:
 
     NotificationsPage *notificationsPage;
     ProfilePage *profilePage;
+    CreateEventPage *createEventPage;
 };
 
 #endif // MAINWINDOW_H

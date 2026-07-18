@@ -6,10 +6,10 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    if (centralWidget()->layout()) {
-        centralWidget()->layout()->setContentsMargins(0, 0, 0, 0);
-        centralWidget()->layout()->setSpacing(0);
-    }
+    // if (centralWidget()->layout()) {
+    //     centralWidget()->layout()->setContentsMargins(0, 0, 0, 0);
+    //     centralWidget()->layout()->setSpacing(0);
+    // }
     // centralWidget()->setStyleSheet("background-color: #FFFFFF;");
     // ui->stackedWidget->setStyleSheet("background-color: #FFFFFF;");
 
@@ -24,6 +24,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     notificationsPage = new NotificationsPage(this);
     profilePage = new ProfilePage(this);
+    createEventPage = new CreateEventPage(this);
 
     connect(dashboardPage,
             &DashBoardPage::notificationsRequested,
@@ -70,6 +71,50 @@ MainWindow::MainWindow(QWidget *parent)
             {
                 ui->stackedWidget->setCurrentWidget(notificationsPage);
             });
+    connect(dashboardPage,
+            &DashBoardPage::createEventRequested,
+            this,
+            [=]()
+            {
+                ui->stackedWidget->setCurrentWidget(createEventPage);
+            });
+    connect(createEventPage,
+            &CreateEventPage::backRequested,
+            this,
+            [=]()
+            {
+                ui->stackedWidget->setCurrentWidget(dashboardPage);
+            });
+
+    connect(createEventPage,
+            &CreateEventPage::eventCreated,
+            dashboardPage,
+            &DashBoardPage::fetchEvents);
+
+    connect(createEventPage,
+            &CreateEventPage::feedRequested,
+            this,
+            [=]()
+            {
+                ui->stackedWidget->setCurrentWidget(dashboardPage);
+            });
+
+    connect(createEventPage,
+            &CreateEventPage::notificationsRequested,
+            this,
+            [=]()
+            {
+                ui->stackedWidget->setCurrentWidget(notificationsPage);
+            });
+
+    connect(createEventPage,
+            &CreateEventPage::profileRequested,
+            this,
+            [=]()
+            {
+                ui->stackedWidget->setCurrentWidget(profilePage);
+            });
+
 
     // ============================
     // Add to Stacked Widget
@@ -81,6 +126,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->stackedWidget->addWidget(dashboardPage);
     ui->stackedWidget->addWidget(notificationsPage);
     ui->stackedWidget->addWidget(profilePage);
+    ui->stackedWidget->addWidget(createEventPage);
 
     // ============================
     // Landing Page Navigation

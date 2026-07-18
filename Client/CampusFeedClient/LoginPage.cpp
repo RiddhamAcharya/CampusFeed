@@ -6,6 +6,11 @@
 #include <QMessageBox>
 #include <QDebug>
 
+QString LoginPage::token = "";
+QString LoginPage::role = "";
+int LoginPage::userId = -1;
+QString LoginPage::fullName = "";
+
 LoginPage::LoginPage(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::LoginPage)
@@ -99,7 +104,13 @@ void LoginPage::onReplyFinished(QNetworkReply *reply)
 
     QJsonObject obj = doc.object();
 
-    QString token = obj["token"].toString();
+    LoginPage::token = obj["token"].toString();
+
+    QJsonObject user = obj["user"].toObject();
+
+    LoginPage::userId = user["id"].toInt();
+    LoginPage::fullName = user["full_name"].toString();
+    LoginPage::role = user["role"].toString();
 
     QString message = obj["message"].toString();
 

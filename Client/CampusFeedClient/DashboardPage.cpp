@@ -127,6 +127,18 @@ DashBoardPage::DashBoardPage(QWidget *parent)
             this,
             &DashBoardPage::profileRequested);
 
+    //-----------------------------
+    // Create Event Button
+    // ----------------------------
+
+    connect(ui->createEventButton,
+            &QPushButton::clicked,
+            this,
+            [=]()
+            {
+                emit createEventRequested();
+            });
+
 }
 
 DashBoardPage::~DashBoardPage()
