@@ -2,6 +2,8 @@
 #define EVENTCARD_H
 
 #include <QWidget>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
 #include "Event.h"
 
 namespace Ui {
@@ -18,8 +20,21 @@ public:
 
     void setEvent(const Event &event);
 
+private slots:
+    void onInterestedClicked();
+    void onNotInterestedClicked();
+    void onGoingClicked();
+    void onReactionSaved(QNetworkReply *reply);
+    void onCurrentReactionFetched(QNetworkReply *reply);
+
 private:
+    void sendInteraction(const QString &type);
+    void fetchCurrentInteraction();
+    void applyInteractionState(const QString &type);
+
     Ui::EventCard *ui;
+    QNetworkAccessManager *networkManager;
+    int eventId = -1;
 };
 
-#endif
+#endif // EVENTCARD_H
