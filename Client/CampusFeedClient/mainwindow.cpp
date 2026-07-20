@@ -165,6 +165,7 @@ MainWindow::MainWindow(QWidget *parent)
             this,
             [=]()
             {
+                dashboardPage->fetchEvents();
                 ui->stackedWidget->setCurrentWidget(dashboardPage);
             });
 

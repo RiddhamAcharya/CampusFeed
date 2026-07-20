@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>560</width>
-    <height>430</height>
+    <width>1176</width>
+    <height>507</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -71,7 +71,7 @@
         <string>CS</string>
        </property>
        <property name="alignment">
-        <set>Qt::AlignCenter</set>
+        <set>Qt::AlignmentFlag::AlignCenter</set>
        </property>
       </widget>
      </item>
@@ -105,7 +105,7 @@
      <item>
       <spacer name="headerSpacer">
        <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+        <enum>Qt::Orientation::Horizontal</enum>
        </property>
        <property name="sizeHint" stdset="0">
         <size>
@@ -190,11 +190,11 @@ QToolButton:hover {
      <property name="text">
       <string>Event Image</string>
      </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
      <property name="scaledContents">
       <bool>true</bool>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignmentFlag::AlignCenter</set>
      </property>
     </widget>
    </item>
@@ -236,7 +236,7 @@ QToolButton:hover {
      <item>
       <spacer name="detailsSpacer">
        <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+        <enum>Qt::Orientation::Horizontal</enum>
        </property>
        <property name="sizeHint" stdset="0">
         <size>
@@ -262,7 +262,7 @@ QToolButton:hover {
         <string>Workshop</string>
        </property>
        <property name="alignment">
-        <set>Qt::AlignCenter</set>
+        <set>Qt::AlignmentFlag::AlignCenter</set>
        </property>
       </widget>
      </item>
@@ -274,10 +274,10 @@ QToolButton:hover {
       <string notr="true">color: #E8ECF2;</string>
      </property>
      <property name="frameShape">
-      <enum>QFrame::HLine</enum>
+      <enum>QFrame::Shape::HLine</enum>
      </property>
      <property name="frameShadow">
-      <enum>QFrame::Sunken</enum>
+      <enum>QFrame::Shadow::Sunken</enum>
      </property>
     </widget>
    </item>
@@ -320,6 +320,9 @@ QPushButton:hover {
        <property name="text">
         <string>⭐ Interested</string>
        </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
      <item>
@@ -346,6 +349,9 @@ QPushButton:hover {
        <property name="text">
         <string>✖ Not Interested</string>
        </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
      <item>
@@ -371,6 +377,9 @@ QPushButton:hover {
        </property>
        <property name="text">
         <string>📅 Going</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
