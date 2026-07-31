@@ -1,0 +1,25 @@
+# POST /api/auth/register
+
+Request
+
+{
+    "full_name": "Ali Salim",
+    "email": "ali@gmail.com",
+    "password": "StrongPassword123!"
+}
+
+Success Response
+
+{
+    "success": true,
+    "message": "Registration successful",
+    "access_token": "...",
+    "refresh_token": "..."
+}
+
+Error Response
+
+{
+    "success": false,
+    "message": "Email already exists"
+}
