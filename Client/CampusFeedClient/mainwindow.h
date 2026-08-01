@@ -10,6 +10,7 @@
 #include "NotificationsPage.h"
 #include "ProfilePage.h"
 #include "CreateEventPage.h"
+#include "Event.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -24,6 +25,9 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+
+private slots:
+    void openEditEvent(const Event &event);
 
 private:
     Ui::MainWindow *ui;

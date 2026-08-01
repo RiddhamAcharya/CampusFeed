@@ -1,6 +1,8 @@
 #include "DashboardPage.h"
 #include "ui_DashboardPage.h"
 #include "EventCard.h"
+#include "LoginPage.h"
+#include <QMessageBox>
 
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -368,9 +370,19 @@ void DashBoardPage::displayEvents(const QList<Event> &events)
     // Create one EventCard per event
     for (const Event &event : events)
     {
-        EventCard *card = new EventCard();
+        EventCard *card = new EventCard(this);
 
         card->setEvent(event);
+
+        connect(card,
+                &EventCard::deleteRequested,
+                this,
+                &DashBoardPage::onDeleteEventRequested);
+
+        connect(card,
+                &EventCard::editRequested,
+                this,
+                &DashBoardPage::onEditEventRequested);
 
         ui->feedLayout->addWidget(card);
     }
@@ -407,4 +419,55 @@ void DashBoardPage::filterEvents()
     }
 
     displayEvents(filteredEvents);
+}
+
+void DashBoardPage::onDeleteEventRequested(int eventId)
+{
+    QNetworkRequest request(
+        QUrl(BASE_URL + "/events/" + QString::number(eventId)));
+
+    request.setRawHeader(
+        "Authorization",
+        ("Bearer " + LoginPage::token).toUtf8());
+
+    QNetworkReply *reply =
+        networkManager->deleteResource(request);
+
+    connect(reply,
+            &QNetworkReply::finished,
+            this,
+            [this, reply]()
+            {
+                onDeleteReplyFinished(reply);
+            });
+}
+
+void DashBoardPage::onDeleteReplyFinished(QNetworkReply *reply)
+{
+    QByteArray response = reply->readAll();
+
+    if(reply->error() != QNetworkReply::NoError)
+    {
+        QMessageBox::warning(
+            this,
+            "Delete Event",
+            response);
+
+        reply->deleteLater();
+        return;
+    }
+
+    QMessageBox::information(
+        this,
+        "CampusFeed",
+        "Event deleted successfully.");
+
+    reply->deleteLater();
+
+    fetchEvents();
+}
+
+void DashBoardPage::onEditEventRequested(const Event &event)
+{
+    emit editEventRequested(event);
 }

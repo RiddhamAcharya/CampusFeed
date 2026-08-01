@@ -5,6 +5,8 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 
+#include "Event.h"
+
 namespace Ui {
 class CreateEventPage;
 }
@@ -17,15 +19,21 @@ public:
     explicit CreateEventPage(QWidget *parent = nullptr);
     ~CreateEventPage();
 
+    // Modes
+    void newEvent();
+    void editEvent(const Event &event);
+
 signals:
-    // MainWindow Navigation
+
+    // Navigation
     void backRequested();
     void feedRequested();
     void notificationsRequested();
     void profileRequested();
 
-    // Refresh Dashboard after successful publish
+    // Dashboard Refresh
     void eventCreated();
+    void eventUpdated();
 
 private slots:
 
@@ -35,11 +43,16 @@ private slots:
     void on_navNotificationsButton_clicked();
     void on_navProfileButton_clicked();
 
-    // Event Creation
+    // Publish / Update
     void on_publishButton_clicked();
 
-    // API Reply
+    // Network Reply
     void onReplyFinished(QNetworkReply *reply);
+
+private:
+
+    // Helpers
+    void clearForm();
 
 private:
 
@@ -47,8 +60,19 @@ private:
 
     QNetworkAccessManager *networkManager;
 
+    //----------------------------------
+    // Edit Mode
+    //----------------------------------
+
+    bool editMode = false;
+    int editingEventId = -1;
+
+    //----------------------------------
+    // API
+    //----------------------------------
+
     const QString BASE_URL =
         "http://127.0.0.1:18080";
 };
 
-#endif
+#endif // CREATEEVENTPAGE_H

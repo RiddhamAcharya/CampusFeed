@@ -10,6 +10,9 @@
 #include <QJsonObject>
 #include <QUrl>
 #include <QDebug>
+#include <QMenu>
+#include <QAction>
+#include <QMessageBox>
 
 EventCard::EventCard(QWidget *parent)
     : QWidget(parent)
@@ -17,20 +20,30 @@ EventCard::EventCard(QWidget *parent)
 {
     ui->setupUi(this);
 
-    // Make description wrap nicely
     ui->descriptionLabel->setWordWrap(true);
-
-    // Make the image scale properly
     ui->eventImageLabel->setScaledContents(true);
 
     networkManager = new QNetworkAccessManager(this);
 
-    connect(ui->interestedButton, &QPushButton::clicked,
-            this, &EventCard::onInterestedClicked);
-    connect(ui->notInterestedButton, &QPushButton::clicked,
-            this, &EventCard::onNotInterestedClicked);
-    connect(ui->goingButton, &QPushButton::clicked,
-            this, &EventCard::onGoingClicked);
+    connect(ui->interestedButton,
+            &QPushButton::clicked,
+            this,
+            &EventCard::onInterestedClicked);
+
+    connect(ui->notInterestedButton,
+            &QPushButton::clicked,
+            this,
+            &EventCard::onNotInterestedClicked);
+
+    connect(ui->goingButton,
+            &QPushButton::clicked,
+            this,
+            &EventCard::onGoingClicked);
+
+    connect(ui->menuButton,
+            &QPushButton::clicked,
+            this,
+            &EventCard::onMenuButtonClicked);
 }
 
 EventCard::~EventCard()
@@ -40,6 +53,7 @@ EventCard::~EventCard()
 
 void EventCard::setEvent(const Event &event)
 {
+    currentEvent = event;
     eventId = event.id;
 
     // Header
@@ -209,6 +223,68 @@ void EventCard::applyInteractionState(const QString &type)
         type == "going" ? selectedStyle : unselectedStyle);
 }
 
+void EventCard::onMenuButtonClicked()
+{
+    QMenu menu(this);
+
+    menu.setStyleSheet(
+        "QMenu {"
+        "    background-color: white;"
+        "    border: 1px solid #D9D9D9;"
+        "    border-radius: 8px;"
+        "    padding: 6px;"
+        "}"
+        "QMenu::item {"
+        "    color: black;"
+        "    padding: 8px 24px;"
+        "    border-radius: 6px;"
+        "}"
+        "QMenu::item:selected {"
+        "    background-color: #EEF4FF;"
+        "    color: #2563EB;"
+        "}"
+        );
+
+    QAction *editAction =
+        menu.addAction("✏ Edit Event");
+
+    QAction *deleteAction =
+        menu.addAction("🗑 Delete Event");
+
+    QAction *selected =
+        menu.exec(
+            ui->menuButton->mapToGlobal(
+                QPoint(0, ui->menuButton->height())));
+
+    if(selected == editAction)
+    {
+        onEditClicked();
+    }
+    else if(selected == deleteAction)
+    {
+        onDeleteClicked();
+    }
+}
+
+void EventCard::onEditClicked()
+{
+    emit editRequested(currentEvent);
+}
+
+void EventCard::onDeleteClicked()
+{
+    QMessageBox::StandardButton reply =
+        QMessageBox::question(
+            this,
+            "Delete Event",
+            "Are you sure you want to delete this event?",
+            QMessageBox::Yes | QMessageBox::No);
+
+    if(reply == QMessageBox::Yes)
+    {
+        emit deleteRequested(eventId);
+    }
+}
 
 
 

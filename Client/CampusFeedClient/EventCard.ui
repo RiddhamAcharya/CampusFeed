@@ -117,15 +117,37 @@
      </item>
      <item>
       <widget class="QToolButton" name="menuButton">
+       <property name="minimumSize">
+        <size>
+         <width>32</width>
+         <height>32</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>32</width>
+         <height>32</height>
+        </size>
+       </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
        <property name="styleSheet">
         <string notr="true">QToolButton {
     border: none;
-    color: #8A8F98;
-    font-size: 16pt;
     background: transparent;
+    color: #6B7280;
+    font-size: 18px;
+    border-radius: 16px;
 }
+
 QToolButton:hover {
-    color: #4C6FE0;
+    background: #EEF4FF;
+    color: #2563EB;
+}
+
+QToolButton:pressed {
+    background: #DCEAFE;
 }</string>
        </property>
        <property name="text">

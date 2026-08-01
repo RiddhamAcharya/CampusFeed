@@ -27,7 +27,7 @@ CreateEventPage::CreateEventPage(QWidget *parent)
             &CreateEventPage::onReplyFinished);
 
     //----------------------------------
-    // Navigation Buttons
+    // Navigation
     //----------------------------------
 
     connect(ui->backButton,
@@ -60,17 +60,81 @@ CreateEventPage::CreateEventPage(QWidget *parent)
             &CreateEventPage::on_publishButton_clicked);
 
     //----------------------------------
-    // Default Date & Time
+    // Default Values
     //----------------------------------
 
     ui->eventDateEdit->setDate(QDate::currentDate());
-
     ui->eventTimeEdit->setTime(QTime::currentTime());
 }
 
 CreateEventPage::~CreateEventPage()
 {
     delete ui;
+}
+
+void CreateEventPage::newEvent()
+{
+    editMode = false;
+    editingEventId = -1;
+
+    clearForm();
+
+    ui->publishButton->setText("Publish Event");
+}
+
+void CreateEventPage::editEvent(const Event &event)
+{
+    editMode = true;
+    editingEventId = event.id;
+
+    //----------------------------------
+    // Fill Form
+    //----------------------------------
+
+    ui->titleLineEdit->setText(event.title);
+
+    ui->descriptionTextEdit->setPlainText(
+        event.description);
+
+    ui->locationLineEdit->setText(
+        event.location);
+
+    ui->registrationLinkLineEdit->setText(
+        event.registrationLink);
+
+    //----------------------------------
+    // Category
+    //----------------------------------
+
+    int index =
+        ui->categoryComboBox->findText(
+            event.category);
+
+    if(index != -1)
+    {
+        ui->categoryComboBox->setCurrentIndex(index);
+    }
+
+    //----------------------------------
+    // Date & Time
+    //----------------------------------
+
+    QDateTime dt =
+        QDateTime::fromString(
+            event.eventDateTime,
+            "yyyy-MM-dd HH:mm:ss");
+
+    if(dt.isValid())
+    {
+        ui->eventDateEdit->setDate(dt.date());
+        ui->eventTimeEdit->setTime(dt.time());
+    }
+
+    //----------------------------------
+    // UI
+    //----------------------------------
+
+    ui->publishButton->setText("Update Event");
 }
 
 void CreateEventPage::on_backButton_clicked()
@@ -96,7 +160,7 @@ void CreateEventPage::on_navProfileButton_clicked()
 void CreateEventPage::on_publishButton_clicked()
 {
     //----------------------------------
-    // Read UI
+    // Read Form
     //----------------------------------
 
     QString title =
@@ -131,7 +195,7 @@ void CreateEventPage::on_publishButton_clicked()
     }
 
     //----------------------------------
-    // Build DateTime
+    // Date & Time
     //----------------------------------
 
     QDateTime dateTime(
@@ -142,7 +206,7 @@ void CreateEventPage::on_publishButton_clicked()
         dateTime.toString("yyyy-MM-dd HH:mm:ss");
 
     //----------------------------------
-    // JSON
+    // JSON Body
     //----------------------------------
 
     QJsonObject json;
@@ -153,46 +217,65 @@ void CreateEventPage::on_publishButton_clicked()
     json["location"] = location;
     json["event_date"] = eventDate;
     json["registration_link"] = registrationLink;
-
-    // Image upload will be implemented later
     json["image_path"] = "";
+
+    QByteArray body =
+        QJsonDocument(json).toJson();
 
     //----------------------------------
     // Request
     //----------------------------------
 
-    QNetworkRequest request(
-        QUrl(BASE_URL + "/events"));
+    QNetworkRequest request;
 
-    request.setHeader(
-        QNetworkRequest::ContentTypeHeader,
-        "application/json");
+    if(editMode)
+    {
+        request.setUrl(
+            QUrl(BASE_URL +
+                 "/events/" +
+                 QString::number(editingEventId)));
 
-    request.setRawHeader(
-        "Authorization",
-        ("Bearer " + LoginPage::token).toUtf8());
+        request.setHeader(
+            QNetworkRequest::ContentTypeHeader,
+            "application/json");
 
-    //----------------------------------
-    // Send
-    //----------------------------------
+        request.setRawHeader(
+            "Authorization",
+            ("Bearer " + LoginPage::token).toUtf8());
 
-    networkManager->post(
-        request,
-        QJsonDocument(json).toJson());
+        networkManager->put(request, body);
+    }
+    else
+    {
+        request.setUrl(
+            QUrl(BASE_URL + "/events"));
+
+        request.setHeader(
+            QNetworkRequest::ContentTypeHeader,
+            "application/json");
+
+        request.setRawHeader(
+            "Authorization",
+            ("Bearer " + LoginPage::token).toUtf8());
+
+        networkManager->post(request, body);
+    }
 }
+
 void CreateEventPage::onReplyFinished(QNetworkReply *reply)
 {
-    QByteArray response = reply->readAll();
+    QByteArray response =
+        reply->readAll();
 
     //----------------------------------
-    // Network Error
+    // Error
     //----------------------------------
 
     if(reply->error() != QNetworkReply::NoError)
     {
         QMessageBox::critical(
             this,
-            "Create Event",
+            "CampusFeed",
             response);
 
         reply->deleteLater();
@@ -203,15 +286,34 @@ void CreateEventPage::onReplyFinished(QNetworkReply *reply)
     // Success
     //----------------------------------
 
+    bool wasEditing = editMode;
+
     QMessageBox::information(
         this,
         "CampusFeed",
-        "Event created successfully!");
+        wasEditing
+            ? "Event updated successfully!"
+            : "Event created successfully!");
 
-    //----------------------------------
-    // Clear Form
-    //----------------------------------
+    clearForm();
 
+    editMode = false;
+    editingEventId = -1;
+
+    ui->publishButton->setText("Publish Event");
+
+    if(wasEditing)
+        emit eventUpdated();
+    else
+        emit eventCreated();
+
+    emit backRequested();
+
+    reply->deleteLater();
+}
+
+void CreateEventPage::clearForm()
+{
     ui->titleLineEdit->clear();
 
     ui->descriptionTextEdit->clear();
@@ -222,21 +324,9 @@ void CreateEventPage::onReplyFinished(QNetworkReply *reply)
 
     ui->categoryComboBox->setCurrentIndex(0);
 
-    ui->eventDateEdit->setDate(QDate::currentDate());
+    ui->eventDateEdit->setDate(
+        QDate::currentDate());
 
-    ui->eventTimeEdit->setTime(QTime::currentTime());
-
-    //----------------------------------
-    // Refresh Dashboard
-    //----------------------------------
-
-    emit eventCreated();
-
-    //----------------------------------
-    // Back to Feed
-    //----------------------------------
-
-    emit backRequested();
-
-    reply->deleteLater();
+    ui->eventTimeEdit->setTime(
+        QTime::currentTime());
 }

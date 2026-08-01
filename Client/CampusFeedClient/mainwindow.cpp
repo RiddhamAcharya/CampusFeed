@@ -78,6 +78,12 @@ MainWindow::MainWindow(QWidget *parent)
             {
                 ui->stackedWidget->setCurrentWidget(createEventPage);
             });
+
+    connect(dashboardPage,
+            &DashBoardPage::editEventRequested,
+            this,
+            &MainWindow::openEditEvent);
+
     connect(createEventPage,
             &CreateEventPage::backRequested,
             this,
@@ -195,7 +201,12 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->stackedWidget->setCurrentWidget(landingPage);
 }
+void MainWindow::openEditEvent(const Event &event)
+{
+    createEventPage->editEvent(event);
 
+    ui->stackedWidget->setCurrentWidget(createEventPage);
+}
 MainWindow::~MainWindow()
 {
     delete ui;
