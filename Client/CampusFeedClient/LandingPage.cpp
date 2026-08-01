@@ -7,6 +7,8 @@ LandingPage::LandingPage(QWidget *parent)
 {
     ui->setupUi(this);
 
+    setAttribute(Qt::WA_StyledBackground, true);
+
     connect(ui->loginButton,
             &QPushButton::clicked,
             this,

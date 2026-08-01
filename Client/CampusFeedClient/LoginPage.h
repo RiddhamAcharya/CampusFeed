@@ -21,6 +21,13 @@ public:
     static int userId;
     static QString fullName;
 
+    // Clears the email/password fields - called after logging out so a
+    // stale password isn't left sitting in the form.
+    void resetForm();
+
+    // Clears the static session state (token/role/userId/fullName).
+    static void logout();
+
 signals:
     void loginSuccessful();
     void signupRequested();

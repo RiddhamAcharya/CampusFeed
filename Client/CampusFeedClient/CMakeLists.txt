@@ -69,6 +69,8 @@ set(PROJECT_SOURCES
 
     # Models
     Event.h
+    TimeUtils.h
+    ICard.h
 
     # Resources
     resources.qrc

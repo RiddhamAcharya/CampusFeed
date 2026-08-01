@@ -17,6 +17,8 @@ LoginPage::LoginPage(QWidget *parent)
 {
     ui->setupUi(this);
 
+    setAttribute(Qt::WA_StyledBackground, true);
+
     networkManager = new QNetworkAccessManager(this);
 
     connect(networkManager,
@@ -41,6 +43,20 @@ LoginPage::LoginPage(QWidget *parent)
 LoginPage::~LoginPage()
 {
     delete ui;
+}
+
+void LoginPage::resetForm()
+{
+    ui->emailEdit->clear();
+    ui->passwordEdit->clear();
+}
+
+void LoginPage::logout()
+{
+    LoginPage::token = "";
+    LoginPage::role = "";
+    LoginPage::userId = -1;
+    LoginPage::fullName = "";
 }
 
 void LoginPage::onLoginClicked()
@@ -68,6 +84,8 @@ void LoginPage::onLoginClicked()
     json["email"] = email;
     json["password"] = password;
 
+    ui->loginButton->setEnabled(false);
+
     networkManager->post(
         request,
         QJsonDocument(json).toJson()
@@ -86,6 +104,8 @@ void LoginPage::onReplyFinished(QNetworkReply *reply)
                               "Login Failed",
                               response);
 
+        ui->loginButton->setEnabled(true);
+
         reply->deleteLater();
         return;
     }
@@ -98,11 +118,25 @@ void LoginPage::onReplyFinished(QNetworkReply *reply)
                              "Error",
                              "Invalid JSON received.");
 
+        ui->loginButton->setEnabled(true);
+
         reply->deleteLater();
         return;
     }
 
     QJsonObject obj = doc.object();
+
+    if (!obj.contains("token") || !obj.contains("user"))
+    {
+        QMessageBox::warning(this,
+                             "Error",
+                             "Login response was missing expected data.");
+
+        ui->loginButton->setEnabled(true);
+
+        reply->deleteLater();
+        return;
+    }
 
     LoginPage::token = obj["token"].toString();
 
@@ -111,6 +145,8 @@ void LoginPage::onReplyFinished(QNetworkReply *reply)
     LoginPage::userId = user["id"].toInt();
     LoginPage::fullName = user["full_name"].toString();
     LoginPage::role = user["role"].toString();
+
+    ui->loginButton->setEnabled(true);
 
     QString message = obj["message"].toString();
 

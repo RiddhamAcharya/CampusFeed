@@ -18,11 +18,21 @@
 #include <algorithm>
 #include <QDateTime>
 
+#include "TimeUtils.h"
+
 DashBoardPage::DashBoardPage(QWidget *parent)
     : QWidget(parent),
     ui(new Ui::DashBoardPage)
 {
     ui->setupUi(this);
+
+    // A plain QWidget does not paint its own "background-color" stylesheet
+    // rule unless this attribute is set - without it, any child frame that
+    // doesn't set its own background (pageHeaderFrame, searchFrame,
+    // chipsFrame) shows the raw system background through instead of the
+    // white background defined in DashboardPage.ui. This is what caused
+    // the page to look black right after login.
+    setAttribute(Qt::WA_StyledBackground, true);
 
     networkManager = new QNetworkAccessManager(this);
 
@@ -150,6 +160,15 @@ DashBoardPage::~DashBoardPage()
 
 void DashBoardPage::fetchEvents()
 {
+    // Re-checked here (rather than only in the constructor) because
+    // DashboardPage is created once at app startup, before the user has
+    // logged in - LoginPage::role isn't known yet at construction time.
+    // fetchEvents() runs every time this page becomes relevant (after
+    // login, after navigating back, after create/update), so this stays
+    // accurate for whoever is actually logged in.
+    ui->createEventButton->setVisible(
+        LoginPage::role == "organizer" || LoginPage::role == "admin");
+
     QString url = BASE_URL + "/events";
 
     QNetworkRequest request{QUrl(url)};
@@ -230,6 +249,8 @@ void DashBoardPage::parseEvents(const QByteArray &response)
 
     QJsonArray array = document.array();
 
+    try
+    {
     for (const QJsonValue &value : array)
     {
         if (!value.isObject())
@@ -258,6 +279,11 @@ void DashBoardPage::parseEvents(const QByteArray &response)
             obj.contains("organizer")
                 ? obj["organizer"].toString()
                 : "Campus Organizer";
+
+        event.organizerId =
+            obj.contains("organizer_id")
+                ? obj["organizer_id"].toInt()
+                : -1;
 
         //-----------------------------
         // Image
@@ -297,27 +323,33 @@ void DashBoardPage::parseEvents(const QByteArray &response)
         }
 
         //-----------------------------
-        // Time Ago
+        // Created At / Time Ago
         //-----------------------------
 
-        event.timeAgo = "Recently";
+        event.createdAt =
+            obj.contains("created_at")
+                ? obj["created_at"].toString()
+                : "";
+
+        event.timeAgo = TimeUtils::relativeTime(event.createdAt);
 
         events.append(event);
     }
 
     //-----------------------------
-    // Sort Newest First
+    // Sort Newest First (by when the post was created, like a
+    // real social feed - not by the upcoming event_date)
     //-----------------------------
 
     std::sort(events.begin(), events.end(),
               [](const Event &a, const Event &b)
               {
                   return QDateTime::fromString(
-                             a.eventDateTime,
+                             a.createdAt,
                              "yyyy-MM-dd HH:mm:ss")
                          >
                          QDateTime::fromString(
-                             b.eventDateTime,
+                             b.createdAt,
                              "yyyy-MM-dd HH:mm:ss");
               });
 
@@ -330,6 +362,16 @@ void DashBoardPage::parseEvents(const QByteArray &response)
     }
 
     qDebug() << "================================";
+    }
+    catch (const std::exception &e)
+    {
+        QMessageBox::warning(
+            this,
+            "CampusFeed",
+            QString("Something went wrong while loading the feed: %1")
+                .arg(e.what()));
+        return;
+    }
 
     filterEvents();
 }

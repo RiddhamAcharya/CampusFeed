@@ -60,12 +60,23 @@ void EventCard::setEvent(const Event &event)
     ui->organizerLabel->setText(event.organizer);
     ui->titleLabel->setText(event.title);
     ui->descriptionLabel->setText(event.description);
+    ui->timeLabel->setText(
+        event.timeAgo.isEmpty() ? "Recently" : event.timeAgo);
 
     // Details Row
     ui->dateLabel->setText(event.date);
     ui->eventTimeLabel->setText(event.time);
     ui->locationLabel->setText(event.location);
     ui->categoryLabel->setText(event.category);
+
+    // Only the event's creator (or an admin) should see the ⋮ Edit/Delete
+    // menu - everyone else just sees the read-only card.
+    bool canManage =
+        (event.organizerId != -1 &&
+         event.organizerId == LoginPage::userId) ||
+        LoginPage::role == "admin";
+
+    ui->menuButton->setVisible(canManage);
 
     // Event Image
     if (!event.imagePath.isEmpty())
@@ -284,6 +295,16 @@ void EventCard::onDeleteClicked()
     {
         emit deleteRequested(eventId);
     }
+}
+
+void EventCard::refresh()
+{
+    fetchCurrentInteraction();
+}
+
+QString EventCard::cardType() const
+{
+    return "Event";
 }
 
 

@@ -13,7 +13,7 @@ void setupNotificationRoutes(App& app, Database& database) {
         sqlite3* db = database.db;
 
         const char* sql =
-            "SELECT id, title, message, is_read "
+            "SELECT id, title, message, is_read, created_at "
             "FROM notifications "
             "WHERE user_id = ? "
             "ORDER BY created_at DESC;";
@@ -22,14 +22,15 @@ void setupNotificationRoutes(App& app, Database& database) {
         sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
         sqlite3_bind_int(stmt, 1, user_id);
 
-        crow::json::wvalue result;
+        crow::json::wvalue result = crow::json::wvalue::list();
         int index = 0;
 
         while (sqlite3_step(stmt) == SQLITE_ROW) {
-            result[index]["id"]      = sqlite3_column_int(stmt, 0);
-            result[index]["title"]   = (const char*)sqlite3_column_text(stmt, 1);
-            result[index]["message"] = (const char*)sqlite3_column_text(stmt, 2);
-            result[index]["is_read"] = sqlite3_column_int(stmt, 3);
+            result[index]["id"]         = sqlite3_column_int(stmt, 0);
+            result[index]["title"]      = (const char*)sqlite3_column_text(stmt, 1);
+            result[index]["message"]    = (const char*)sqlite3_column_text(stmt, 2);
+            result[index]["is_read"]    = sqlite3_column_int(stmt, 3);
+            result[index]["created_at"] = (const char*)sqlite3_column_text(stmt, 4);
             index++;
         }
 

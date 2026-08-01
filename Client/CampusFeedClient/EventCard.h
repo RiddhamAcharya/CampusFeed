@@ -8,12 +8,13 @@
 #include <QAction>
 
 #include "Event.h"
+#include "ICard.h"
 
 namespace Ui {
 class EventCard;
 }
 
-class EventCard : public QWidget
+class EventCard : public QWidget, public ICard
 {
     Q_OBJECT
 
@@ -22,6 +23,10 @@ public:
     ~EventCard();
 
     void setEvent(const Event &event);
+
+    // ICard
+    void refresh() override;
+    QString cardType() const override;
 
 signals:
     void editRequested(const Event &event);

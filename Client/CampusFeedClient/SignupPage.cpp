@@ -15,6 +15,8 @@ SignUpPage::SignUpPage(QWidget *parent)
 {
     ui->setupUi(this);
 
+    setAttribute(Qt::WA_StyledBackground, true);
+
     selectedRole = "student";
 
     networkManager = new QNetworkAccessManager(this);

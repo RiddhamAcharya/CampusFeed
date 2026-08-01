@@ -1,0 +1,63 @@
+/* ==========================================================
+   CampusFeed - Global App Stylesheet
+   Loaded once in main.cpp via QApplication::setStyleSheet().
+   Keep this file for rules that must apply app-wide (dialogs,
+   popup menus, etc). Page-specific styling stays in each .ui
+   file, as it already does throughout this project.
+   ========================================================== */
+
+/* ---------- QMessageBox ---------- */
+QMessageBox {
+    background-color: #FFFFFF;
+}
+
+QMessageBox QLabel {
+    color: #1A1A2E;
+    background-color: transparent;
+}
+
+QMessageBox QPushButton {
+    color: #1A1A2E;
+    background-color: #FFFFFF;
+    border: 1px solid #D1D5DB;
+    border-radius: 6px;
+    padding: 6px 14px;
+    min-width: 70px;
+}
+
+QMessageBox QPushButton:hover {
+    background-color: #F3F4F6;
+}
+
+QMessageBox QPushButton:pressed {
+    background-color: #E5E7EB;
+}
+
+/* ---------- QMenu (context / triple-dot menus) ---------- */
+QMenu {
+    background-color: #FFFFFF;
+    color: #1A1A2E;
+    border: 1px solid #D9D9D9;
+    border-radius: 8px;
+    padding: 6px;
+}
+
+QMenu::item {
+    color: #1A1A2E;
+    padding: 8px 24px;
+    border-radius: 6px;
+}
+
+QMenu::item:selected {
+    background-color: #EEF4FF;
+    color: #2563EB;
+}
+
+/* ---------- QToolTip ---------- */
+QToolTip {
+    background-color: #1A1A2E;
+    color: #FFFFFF;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 4px;
+}

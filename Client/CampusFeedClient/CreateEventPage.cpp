@@ -15,6 +15,8 @@ CreateEventPage::CreateEventPage(QWidget *parent)
 {
     ui->setupUi(this);
 
+    setAttribute(Qt::WA_StyledBackground, true);
+
     //----------------------------------
     // Network Manager
     //----------------------------------
@@ -27,37 +29,16 @@ CreateEventPage::CreateEventPage(QWidget *parent)
             &CreateEventPage::onReplyFinished);
 
     //----------------------------------
-    // Navigation
+    // Navigation & Publish Button
     //----------------------------------
-
-    connect(ui->backButton,
-            &QPushButton::clicked,
-            this,
-            &CreateEventPage::on_backButton_clicked);
-
-    connect(ui->navFeedButton,
-            &QPushButton::clicked,
-            this,
-            &CreateEventPage::on_navFeedButton_clicked);
-
-    connect(ui->navNotificationsButton,
-            &QPushButton::clicked,
-            this,
-            &CreateEventPage::on_navNotificationsButton_clicked);
-
-    connect(ui->navProfileButton,
-            &QPushButton::clicked,
-            this,
-            &CreateEventPage::on_navProfileButton_clicked);
-
-    //----------------------------------
-    // Publish Button
-    //----------------------------------
-
-    connect(ui->publishButton,
-            &QPushButton::clicked,
-            this,
-            &CreateEventPage::on_publishButton_clicked);
+    // NOTE: on_backButton_clicked(), on_navFeedButton_clicked(),
+    // on_navNotificationsButton_clicked(), on_navProfileButton_clicked()
+    // and on_publishButton_clicked() are already auto-connected by Qt's
+    // naming convention (ui->setupUi() calls connectSlotsByName(), which
+    // wires QPushButton "publishButton"'s clicked() signal straight to
+    // on_publishButton_clicked() because the names match). Do NOT add a
+    // manual connect() for them here - that was the cause of the
+    // "one click creates two events" bug (see Phase 2 fix notes).
 
     //----------------------------------
     // Default Values
@@ -79,6 +60,7 @@ void CreateEventPage::newEvent()
 
     clearForm();
 
+    ui->publishButton->setEnabled(true);
     ui->publishButton->setText("Publish Event");
 }
 
@@ -134,6 +116,7 @@ void CreateEventPage::editEvent(const Event &event)
     // UI
     //----------------------------------
 
+    ui->publishButton->setEnabled(true);
     ui->publishButton->setText("Update Event");
 }
 
@@ -225,6 +208,11 @@ void CreateEventPage::on_publishButton_clicked()
     //----------------------------------
     // Request
     //----------------------------------
+    // Disabled immediately so a double-click (or an impatient extra
+    // click while the network request is still in flight) can never
+    // fire a second POST/PUT - re-enabled in onReplyFinished().
+
+    ui->publishButton->setEnabled(false);
 
     QNetworkRequest request;
 
@@ -278,6 +266,8 @@ void CreateEventPage::onReplyFinished(QNetworkReply *reply)
             "CampusFeed",
             response);
 
+        ui->publishButton->setEnabled(true);
+
         reply->deleteLater();
         return;
     }
@@ -300,6 +290,7 @@ void CreateEventPage::onReplyFinished(QNetworkReply *reply)
     editMode = false;
     editingEventId = -1;
 
+    ui->publishButton->setEnabled(true);
     ui->publishButton->setText("Publish Event");
 
     if(wasEditing)

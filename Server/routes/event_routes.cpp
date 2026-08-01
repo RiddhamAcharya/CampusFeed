@@ -32,7 +32,7 @@ void setupEventRoutes(App &app, Database &database)
             return crow::response(500, "Database error");
         }
 
-        crow::json::wvalue result;
+        crow::json::wvalue result = crow::json::wvalue::list();
         int index = 0;
 
         while (sqlite3_step(stmt) == SQLITE_ROW)
@@ -90,7 +90,7 @@ void setupEventRoutes(App &app, Database &database)
     auto events =
         EventService::search(database.db, q);
 
-    crow::json::wvalue res;
+    crow::json::wvalue res = crow::json::wvalue::list();
     int i = 0;
 
     for (auto& e : events)
@@ -126,7 +126,7 @@ void setupEventRoutes(App &app, Database &database)
     auto events =
         EventService::filter(database.db, category, location, date);
 
-    crow::json::wvalue res;
+    crow::json::wvalue res = crow::json::wvalue::list();
     int i = 0;
 
     for (auto& e : events)
@@ -344,6 +344,62 @@ void setupEventRoutes(App &app, Database &database)
         );
     }
 
+    //----------------------------------
+    // Notify everyone else
+    //----------------------------------
+    // This is what actually puts rows into the notifications table -
+    // nothing else in the app does. Best-effort: a failure here should
+    // not turn a successfully-created event into an error response.
+
+    {
+        const char* recipientsSql =
+            "SELECT id FROM users WHERE id != ?";
+
+        sqlite3_stmt* recipientsStmt;
+
+        if (sqlite3_prepare_v2(
+                db,
+                recipientsSql,
+                -1,
+                &recipientsStmt,
+                nullptr) == SQLITE_OK)
+        {
+            sqlite3_bind_int(recipientsStmt, 1, userId);
+
+            const char* notifySql =
+                "INSERT INTO notifications (user_id, title, message) "
+                "VALUES (?, ?, ?)";
+
+            std::string notifTitle = "New Event Posted";
+            std::string notifMessage =
+                "\"" + title + "\" was just posted. Check it out!";
+
+            while (sqlite3_step(recipientsStmt) == SQLITE_ROW)
+            {
+                int recipientId = sqlite3_column_int(recipientsStmt, 0);
+
+                sqlite3_stmt* notifyStmt;
+
+                if (sqlite3_prepare_v2(
+                        db,
+                        notifySql,
+                        -1,
+                        &notifyStmt,
+                        nullptr) == SQLITE_OK)
+                {
+                    sqlite3_bind_int(notifyStmt, 1, recipientId);
+                    sqlite3_bind_text(notifyStmt, 2, notifTitle.c_str(), -1, SQLITE_TRANSIENT);
+                    sqlite3_bind_text(notifyStmt, 3, notifMessage.c_str(), -1, SQLITE_TRANSIENT);
+
+                    sqlite3_step(notifyStmt);
+                    sqlite3_finalize(notifyStmt);
+                }
+            }
+
+            sqlite3_finalize(recipientsStmt);
+        }
+    }
+
     crow::json::wvalue response;
 
     response["message"] = "Event created successfully";
@@ -388,7 +444,7 @@ void setupEventRoutes(App &app, Database &database)
 
     sqlite3_bind_int(stmt, 1, userId);
 
-    crow::json::wvalue result;
+    crow::json::wvalue result = crow::json::wvalue::list();
     int index = 0;
 
     while (sqlite3_step(stmt) == SQLITE_ROW)

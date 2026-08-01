@@ -6,12 +6,18 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    // if (centralWidget()->layout()) {
-    //     centralWidget()->layout()->setContentsMargins(0, 0, 0, 0);
-    //     centralWidget()->layout()->setSpacing(0);
-    // }
-    // centralWidget()->setStyleSheet("background-color: #FFFFFF;");
-    // ui->stackedWidget->setStyleSheet("background-color: #FFFFFF;");
+    if (centralWidget()->layout()) {
+        centralWidget()->layout()->setContentsMargins(0, 0, 0, 0);
+        centralWidget()->layout()->setSpacing(0);
+    }
+
+    // Safety-net background: each page already paints its own white
+    // background (see WA_StyledBackground fix in DashboardPage etc.),
+    // but this gives every page a white fallback at the container level
+    // too, in case a future page/frame is added without its own
+    // background set.
+    centralWidget()->setStyleSheet("background-color: #FFFFFF;");
+    ui->stackedWidget->setStyleSheet("background-color: #FFFFFF;");
 
     // ============================
     // Create Pages
@@ -31,6 +37,7 @@ MainWindow::MainWindow(QWidget *parent)
             this,
             [=]()
             {
+                notificationsPage->fetchNotifications();
                 ui->stackedWidget->setCurrentWidget(notificationsPage);
             });
 
@@ -39,6 +46,7 @@ MainWindow::MainWindow(QWidget *parent)
             this,
             [=]()
             {
+                profilePage->refreshProfile();
                 ui->stackedWidget->setCurrentWidget(profilePage);
             });
     connect(notificationsPage,
@@ -46,6 +54,7 @@ MainWindow::MainWindow(QWidget *parent)
             this,
             [=]()
             {
+                dashboardPage->fetchEvents();
                 ui->stackedWidget->setCurrentWidget(dashboardPage);
             });
 
@@ -54,6 +63,7 @@ MainWindow::MainWindow(QWidget *parent)
             this,
             [=]()
             {
+                profilePage->refreshProfile();
                 ui->stackedWidget->setCurrentWidget(profilePage);
             });
     connect(profilePage,
@@ -61,6 +71,7 @@ MainWindow::MainWindow(QWidget *parent)
             this,
             [=]()
             {
+                dashboardPage->fetchEvents();
                 ui->stackedWidget->setCurrentWidget(dashboardPage);
             });
 
@@ -69,13 +80,31 @@ MainWindow::MainWindow(QWidget *parent)
             this,
             [=]()
             {
+                notificationsPage->fetchNotifications();
                 ui->stackedWidget->setCurrentWidget(notificationsPage);
             });
+
+    // ============================
+    // Logout
+    // ============================
+
+    connect(profilePage,
+            &ProfilePage::logoutRequested,
+            this,
+            [=]()
+            {
+                LoginPage::logout();
+                loginPage->resetForm();
+
+                ui->stackedWidget->setCurrentWidget(loginPage);
+            });
+
     connect(dashboardPage,
             &DashBoardPage::createEventRequested,
             this,
             [=]()
             {
+                createEventPage->newEvent();
                 ui->stackedWidget->setCurrentWidget(createEventPage);
             });
 
@@ -97,11 +126,20 @@ MainWindow::MainWindow(QWidget *parent)
             dashboardPage,
             &DashBoardPage::fetchEvents);
 
+    // Phase 1 fix: editing an event previously never refreshed the
+    // feed (only eventCreated was connected), so an edit looked like
+    // it silently did nothing until the next manual refresh.
+    connect(createEventPage,
+            &CreateEventPage::eventUpdated,
+            dashboardPage,
+            &DashBoardPage::fetchEvents);
+
     connect(createEventPage,
             &CreateEventPage::feedRequested,
             this,
             [=]()
             {
+                dashboardPage->fetchEvents();
                 ui->stackedWidget->setCurrentWidget(dashboardPage);
             });
 
@@ -110,6 +148,7 @@ MainWindow::MainWindow(QWidget *parent)
             this,
             [=]()
             {
+                notificationsPage->fetchNotifications();
                 ui->stackedWidget->setCurrentWidget(notificationsPage);
             });
 
@@ -118,6 +157,7 @@ MainWindow::MainWindow(QWidget *parent)
             this,
             [=]()
             {
+                profilePage->refreshProfile();
                 ui->stackedWidget->setCurrentWidget(profilePage);
             });
 

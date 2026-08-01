@@ -21,7 +21,7 @@ void setupUserRoutes(App& app, Database& database)
         sqlite3* db = database.db;
 
         const char* sql =
-            "SELECT id, full_name, email, role, institution "
+            "SELECT id, full_name, email, role, institution, created_at "
             "FROM users WHERE id = ?";
 
         sqlite3_stmt* stmt;
@@ -43,7 +43,11 @@ void setupUserRoutes(App& app, Database& database)
         res["full_name"] = (const char*)sqlite3_column_text(stmt, 1);
         res["email"] = (const char*)sqlite3_column_text(stmt, 2);
         res["role"] = (const char*)sqlite3_column_text(stmt, 3);
-        res["institution"] = (const char*)sqlite3_column_text(stmt, 4);
+        res["institution"] =
+            sqlite3_column_text(stmt, 4)
+                ? (const char*)sqlite3_column_text(stmt, 4)
+                : "";
+        res["created_at"] = (const char*)sqlite3_column_text(stmt, 5);
 
         sqlite3_finalize(stmt);
 

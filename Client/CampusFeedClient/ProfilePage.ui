@@ -137,8 +137,8 @@
             <item>
              <widget class="QLabel" name="verifiedBadge">
               <property name="minimumSize"><size><width>0</width><height>26</height></size></property>
-              <property name="maximumSize"><size><width>150</width><height>26</height></size></property>
-              <property name="text"><string>✅  Verified Student</string></property>
+              <property name="maximumSize"><size><width>220</width><height>26</height></size></property>
+              <property name="text"><string>📅  Joined recently</string></property>
               <property name="alignment"><set>Qt::AlignCenter</set></property>
               <property name="styleSheet">
                <string notr="true">background-color: #E6EFFE; color: #3B82F6; border-radius: 13px; font-size: 12px; font-weight: 600; padding-left: 4px; padding-right: 4px;</string>
