@@ -6,148 +6,195 @@
 
 #include <sqlite3.h>
 #include <iostream>
+#include <exception>
 
-void setupAuthRoutes(App& app, Database& database) {
-    
+void setupAuthRoutes(App& app, Database& database)
+{
+    // =========================
     // SIGNUP ROUTE
-    
+    // =========================
     CROW_ROUTE(app, "/signup").methods("POST"_method)
-    ([&database](const crow::request& req) 
+    ([&database](const crow::request& req)
     {
+        try
+        {
+            auto body = crow::json::load(req.body);
 
-        auto body = crow::json::load(req.body);
+            if (!body)
+            {
+                return crow::response(400, "Invalid JSON");
+            }
 
-        if (!body) {
-            return crow::response(400, "Invalid JSON");
+            std::string full_name = std::string(body["full_name"].s());
+            std::string email = std::string(body["email"].s());
+            std::string password = std::string(body["password"].s());
+            std::string role = std::string(body["role"].s());
+
+            std::string institution = body.has("institution")
+                ? std::string(body["institution"].s())
+                : "";
+
+            std::string profile_image = body.has("profile_image")
+                ? std::string(body["profile_image"].s())
+                : "";
+
+            // Validation
+            if (full_name.empty() || email.empty() ||
+                password.empty() || role.empty())
+            {
+                return crow::response(400, "Missing required fields");
+            }
+
+            if (role != "student" &&
+                role != "organizer" &&
+                role != "admin")
+            {
+                return crow::response(400, "Invalid role");
+            }
+
+            // Hash password
+            std::string password_hash = hashPassword(password);
+
+            sqlite3* db = database.db;
+
+            const char* sql =
+                "INSERT INTO users "
+                "(full_name, email, password_hash, role, institution, profile_image) "
+                "VALUES (?, ?, ?, ?, ?, ?)";
+
+            sqlite3_stmt* stmt = nullptr;
+
+            int rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
+
+            if (rc != SQLITE_OK)
+            {
+                return crow::response(500, "Failed to prepare statement");
+            }
+
+            sqlite3_bind_text(stmt, 1, full_name.c_str(), -1, SQLITE_TRANSIENT);
+            sqlite3_bind_text(stmt, 2, email.c_str(), -1, SQLITE_TRANSIENT);
+            sqlite3_bind_text(stmt, 3, password_hash.c_str(), -1, SQLITE_TRANSIENT);
+            sqlite3_bind_text(stmt, 4, role.c_str(), -1, SQLITE_TRANSIENT);
+            sqlite3_bind_text(stmt, 5, institution.c_str(), -1, SQLITE_TRANSIENT);
+            sqlite3_bind_text(stmt, 6, profile_image.c_str(), -1, SQLITE_TRANSIENT);
+
+            rc = sqlite3_step(stmt);
+
+            sqlite3_finalize(stmt);
+
+            if (rc != SQLITE_DONE)
+            {
+                return crow::response(500, "Signup failed (email may already exist)");
+            }
+
+            return crow::response(200, "User created successfully");
         }
-
-        
-        std::string full_name = std::string(body["full_name"].s());
-        std::string email = std::string(body["email"].s());
-        std::string password = std::string(body["password"].s());
-        std::string role = std::string(body["role"].s());
-
-        std::string institution = body.has("institution")
-            ? std::string(body["institution"].s())
-            : "";
-
-        std::string profile_image = body.has("profile_image")
-            ? std::string(body["profile_image"].s())
-            : "";
-
-        // Basic validation
-        if (full_name.empty() || email.empty() || password.empty() || role.empty()) {
-            return crow::response(400, "Missing required fields");
+        catch (const std::exception& e)
+        {
+            std::cerr << "Signup Exception: " << e.what() << std::endl;
+            return crow::response(500, "Internal server error");
         }
-
-        // Role validation (matches your schema constraint)
-        if (role != "student" && role != "organizer" && role != "admin") {
-            return crow::response(400, "Invalid role");
+        catch (...)
+        {
+            std::cerr << "Unknown Signup Exception\n";
+            return crow::response(500, "Unknown server error");
         }
-
-        // Hash password using openssl
-        std::string password_hash = hashPassword(password);
-
-        sqlite3* db = database.db;
-
-        const char* sql =
-            "INSERT INTO users (full_name, email, password_hash, role, institution, profile_image) "
-            "VALUES (?, ?, ?, ?, ?, ?)";
-
-        sqlite3_stmt* stmt;
-
-        int rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
-
-        if (rc != SQLITE_OK) {
-            return crow::response(500, "Failed to prepare statement");
-        }
-
-        sqlite3_bind_text(stmt, 1, full_name.c_str(), -1, SQLITE_TRANSIENT);
-        sqlite3_bind_text(stmt, 2, email.c_str(), -1, SQLITE_TRANSIENT);
-        sqlite3_bind_text(stmt, 3, password_hash.c_str(), -1, SQLITE_TRANSIENT);
-        sqlite3_bind_text(stmt, 4, role.c_str(), -1, SQLITE_TRANSIENT);
-        sqlite3_bind_text(stmt, 5, institution.c_str(), -1, SQLITE_TRANSIENT);
-        sqlite3_bind_text(stmt, 6, profile_image.c_str(), -1, SQLITE_TRANSIENT);
-
-        rc = sqlite3_step(stmt);
-
-        sqlite3_finalize(stmt);
-
-        if (rc != SQLITE_DONE) {
-            return crow::response(500, "Signup failed (email may already exist)");
-        }
-
-        return crow::response(200, "User created successfully");
     });
 
+    // =========================
     // LOGIN ROUTE
-
+    // =========================
     CROW_ROUTE(app, "/login").methods("POST"_method)
     ([&database](const crow::request& req)
     {
+        try
+        {
+            auto body = crow::json::load(req.body);
 
-        auto body = crow::json::load(req.body);
+            if (!body)
+            {
+                return crow::response(400, "Invalid JSON");
+            }
 
-        if (!body) {
-            return crow::response(400, "Invalid JSON");
-        }
+            std::string email = std::string(body["email"].s());
+            std::string password = std::string(body["password"].s());
 
-        std::string email = std::string(body["email"].s());
-        std::string password = std::string(body["password"].s());
+            if (email.empty() || password.empty())
+            {
+                return crow::response(400, "Email and password required");
+            }
 
-        if (email.empty() || password.empty()) {
-            return crow::response(400, "Email and password required");
-        }
+            sqlite3* db = database.db;
 
-        sqlite3* db = database.db;
+            const char* sql =
+                "SELECT id, full_name, email, password_hash, role "
+                "FROM users WHERE email = ?";
 
-        const char* sql =
-            "SELECT id, full_name, email, password_hash, role "
-            "FROM users WHERE email = ?";
+            sqlite3_stmt* stmt = nullptr;
 
-        sqlite3_stmt* stmt;
+            if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) != SQLITE_OK)
+            {
+                return crow::response(500, "DB error");
+            }
 
-        if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) != SQLITE_OK) {
-            return crow::response(500, "DB error");
-        }
+            sqlite3_bind_text(stmt, 1, email.c_str(), -1, SQLITE_TRANSIENT);
 
-        sqlite3_bind_text(stmt, 1, email.c_str(), -1, SQLITE_TRANSIENT);
+            int rc = sqlite3_step(stmt);
 
-        int rc = sqlite3_step(stmt);
+            if (rc != SQLITE_ROW)
+            {
+                sqlite3_finalize(stmt);
+                return crow::response(401, "User not found");
+            }
 
-        if (rc != SQLITE_ROW) {
+            int id = sqlite3_column_int(stmt, 0);
+
+            std::string full_name =
+                reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
+
+            std::string db_email =
+                reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
+
+            std::string db_password_hash =
+                reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3));
+
+            std::string role =
+                reinterpret_cast<const char*>(sqlite3_column_text(stmt, 4));
+
             sqlite3_finalize(stmt);
-            return crow::response(401, "User not found");
+
+            // Hash incoming password
+            std::string input_hash = hashPassword(password);
+
+            if (input_hash != db_password_hash)
+            {
+                return crow::response(401, "Invalid password");
+            }
+
+            // Generate JWT
+            std::string token = create_token(id);
+
+            crow::json::wvalue res;
+
+            res["message"] = "Login successful";
+            res["token"] = token;
+
+            res["user"]["id"] = id;
+            res["user"]["full_name"] = full_name;
+            res["user"]["email"] = db_email;
+            res["user"]["role"] = role;
+
+            return crow::response(res);
         }
-
-        int id = sqlite3_column_int(stmt, 0);
-
-        std::string full_name = (const char*)sqlite3_column_text(stmt, 1);
-        std::string db_email = (const char*)sqlite3_column_text(stmt, 2);
-        std::string db_password_hash = (const char*)sqlite3_column_text(stmt, 3);
-        std::string role = (const char*)sqlite3_column_text(stmt, 4);
-
-        sqlite3_finalize(stmt);
-
-        // Hash incoming password
-        std::string input_hash = hashPassword(password);
-
-        if (input_hash != db_password_hash) {
-            return crow::response(401, "Invalid password");
+        catch (const std::exception& e)
+        {
+            std::cerr << "Login Exception: " << e.what() << std::endl;
+            return crow::response(500, "Internal server error");
         }
-
-        std::string token = create_token(id);
-
-        crow::json::wvalue res;
-
-        res["message"] = "Login successful";
-        res["token"] = token;
-
-        res["user"]["id"] = id;
-        res["user"]["full_name"] = full_name;
-        res["user"]["email"] = db_email;
-        res["user"]["role"] = role;
-
-        return crow::response(res);
+        catch (...)
+        {
+            std::cerr << "Unknown Login Exception\n";
+            return crow::response(500, "Unknown server error");
+        }
     });
 }
