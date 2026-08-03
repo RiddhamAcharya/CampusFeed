@@ -133,11 +133,11 @@ CampusFeed is designed specifically for Nepalese institutions where:
 
 ## 👨‍💻 Contributors
 
-- **Riddham Acharya**   
-- **Salim Ali**   
-- **Sparsha Bartaula**   
-- **Harsit Bhuju**
-- **Subhankar Chand** 
+- **Riddham Acharya**   ** 04 **
+- **Salim Ali**         ** 13 **
+- **Sparsha Bartaula**  ** 28 **
+- **Harsit Bhuju**      ** 42 **
+- **Subhankar Chand**   ** 44 **
  
 
 ---
