@@ -133,11 +133,11 @@ CampusFeed is designed specifically for Nepalese institutions where:
 
 ## 👨‍💻 Contributors
 
-- **Riddham Acharya** (Roll No. 4)  
-- **Salim Ali** (Roll No. 13)  
-- **Sparsha Bartaula** (Roll No. 28)  
-- **Harsit Bhuju** (Roll No. 42)
-- **Subhankar Chand** (Roll No. 46)  
+- **Riddham Acharya**   
+- **Salim Ali**   
+- **Sparsha Bartaula**   
+- **Harsit Bhuju**
+- **Subhankar Chand** 
  
 
 ---
